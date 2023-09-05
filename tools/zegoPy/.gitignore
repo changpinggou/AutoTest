@@ -1,0 +1,11 @@
+*.pyc
+__pycache__
+.idea
+.DS_Store
+.vscode
+VERSION
+zegopy/builder/zego_artifactory_cache.json
+zegopy/utils/crash_analysis/crash_stack.txt
+build
+dist
+zegopy.egg-info

@@ -1,0 +1,6 @@
+framework module EmptyTestLib {
+  umbrella header "EmptyTestLib.h"
+
+  export *
+  module * { export * }
+}

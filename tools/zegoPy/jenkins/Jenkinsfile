@@ -1,0 +1,64 @@
+// Jenkins build entry for publish pyscripts to pypi
+
+@Library('pyscripts') _
+
+pipeline {
+
+    agent {
+        docker {
+            image "dev-docker.pkg.coding.zego.cloud/ci_docker_images/python/zegopy_python:1.0.1"
+            args "-u jenkins:root"
+            label "docker"
+        }
+    }
+
+    parameters {
+        string(name: "BRANCH_NAME", defaultValue: "master", description: "要构建 pypi 的 pyscripts 仓库的分支")
+    }
+
+    stages {
+        stage("Build") {
+            steps {
+                script {
+                    sh(script: "python3 setup.py sdist build")
+
+                    def twine_cmd = "twine upload "
+                    twine_cmd += "--repository-url http://dev-pypi.pkg.coding.zego.cloud/common_utils/zegopy "
+                    twine_cmd += "-u ptd73lcn3h0a -p 113ffa4e41876b3f430bd1d041cd0adea285a8f8 "
+                    twine_cmd += "--non-interactive "
+                    twine_cmd += "dist/* "
+                    sh(script: twine_cmd)
+
+                    version_number = "Unknown"
+                    if (fileExists("${WORKSPACE}/zegopy/VERSION")) {
+                        version_number = readFile("${WORKSPACE}/zegopy/VERSION")
+                        println("\nGet version number: '${version_number}' from file '${WORKSPACE}/VERSION'\n")
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            script {
+                mdBody = "\n- 分支： ${BRANCH_NAME}"
+                mdBody += "\n- **<font color=\"info\">构建成功</font>**"
+                mdBody += "\n- zegopy 已发布新版本: ${version_number}"
+                mdBody += "\n- 请执行以下命令更新 `python3 -m pip install -i http://dev-pypi.pkg.coding.zego.cloud/common_utils/zegopy/simple zegopy --trusted-host dev-pypi.pkg.coding.zego.cloud --upgrade`"
+                report_wecom("${env.WECOM_WEBHOOK}", true, "pyscripts", null, mdBody)
+            }
+        }
+        unsuccessful {
+            script {
+                mdBody = "\n- 分支： ${BRANCH_NAME}"
+                mdBody += "\n- **<font color=\"warning\">构建失败</font>**"
+                report_wecom("${env.WECOM_WEBHOOK}", false, "pyscripts", null, mdBody)
+            }
+        }
+        always {
+            // 完成后清理 WorkSpace
+            cleanWs()
+        }
+    }
+}

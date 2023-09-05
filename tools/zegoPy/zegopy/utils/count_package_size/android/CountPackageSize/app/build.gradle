@@ -1,0 +1,49 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+    ndkVersion "21.3.6528147"
+
+    defaultConfig {
+        applicationId "im.zego.CountPackageSize"
+        minSdkVersion 15
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        ndk { abiFilters 'arm64-v8a' }
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("../signing_key.jks")
+            storePassword "your_keystore_password"
+            keyAlias "your_key_alias"
+            keyPassword "your_key_password"
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets { main { jniLibs.srcDirs = ['libs'] } }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.1.0'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+}
