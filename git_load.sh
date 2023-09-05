@@ -7,7 +7,8 @@ folder_name="AutoTest"
 
 echo "shell receive workspace: $workspace"
 
-if [ -d "$workspace/$folder_name"]; then
+if [ -d "$workspace/$folder_name" ]; then
+    echo "git clone $git_url"
     git clone $git_url
 fi
 
