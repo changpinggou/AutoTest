@@ -41,7 +41,9 @@ def main(argv):
     
     docker_controller = docker_ctrl.DockerController()
     docker_container_id, docker_server_name = docker_controller.get_docker(args.dockername)
-
+    if not os.path.exists(args.outputpath):
+        os.mkdir(args.outputpath)
+    
     if args.platform == 'linux':
         print('\n linux run linux interface test')
         run_case.run_case(docker_container_id, args.outputpath)
