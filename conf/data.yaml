@@ -1,0 +1,151 @@
+digital_server: digital_server-2023-08-23-16-28
+
+# 测试流程
+# test_great_change_model_inference_to_video
+default_video: chuyao_stand_WhiteSkirt_1080p_10s.mp4
+short_video: chuyao_stand_WhiteSkirt_1080p_10s.mp4
+default_audio: chinese_girl_voice_3.wav
+female_audio_1: chinese_girl_voice_1.wav 
+female_audio_2: chinese_girl_voice_2.wav 
+male_audio_1: chinese_man_voice_1.wav
+male_audio_2: chinese_live_man_voice_1.wav
+silence_audio: silence_inputEmpty1.wav
+
+
+# test_small_change_model_inference_to_video，也用short_video，default_audio
+default_model: b908c081-6f59-42a3-9ee3-68254f2cf631_1692865194.zip  #V150_67_model_chuyao_stand_WhiteSkirt_1080p_10s_Dora_need.zip #'v151_65_model_chuyao_stand_white_dora_need.zip'
+default_inference: ebf8845f-6d41-4e40-8673-5f4b10700e93.zip   #'V150_68_inference_chuyao_stand_WhiteSkirt_1080p_10s_Dora_need.zip' #'v151_65_inference_chuyao_stand_white_Dora_need.zip'
+
+# test_new_change_model_inference_to_video
+# 路径分别为
+video_to_create_model_P0: 1_test_origin_video/chuyao_stand_WhiteSkirt_1080p_4618MB_11min57s.mp4
+video_to_create_inference_p0: chuyao_stand_WhiteSkirt_1080p_4618MB_1min_headsilence.mp4
+
+# test_samll_change_parallel_create_default_quality
+# 先使用客户视频，2K,/data/digital_datas/test/custom_source/custom_blue_stripe_skirt_hongsong_man.mp4
+default_quality: train_quality_normal
+demo_quality: train_quality_demo
+normal_quality: train_quality_normal
+high_quality: train_quality_high
+custom_default_video_to_model: 'custom_source/custom_white_dress_aiqidao.mp4' #'custom_source/custom_blue_stripe_skirt_hongsong_man.mp4'
+#custom_hongsong_to_model: 1_test_clip_video/Dora_need_v151_65_chuyao_stand_white_17s.mp4    # 调试脚本使用
+
+# test_old_change_model_inference_to_video
+# default_quality, default_model, default_inference
+
+# test_create_model
+default_video_to_model: 'custom_source/custom_white_dress_aiqidao.mp4' #1_test_origin_video/chuyao_stand_WhiteSkirt_1080p_4618MB_11min57s.mp4   #1_test_origin_video/meimei_sit_WhiteSkirt_2314MB_10min17s_sure.mp4   #'Dora_need_v151_65_chuyao_stand_white_17s.mp4'
+create_model_result: ed9ac2ca-00c2-433a-bbb0-24c269ded772_1692672577.zip
+
+# test_create_inference
+default_video_to_inference: 1_test_clip_video/chuyao_stand_WhiteSkirt_1080p_4618MB_1min_headsilence.mp4   #1_test_clip_video/meimei_sit_WhiteSkirt_2314MB_1min_headsilence_sure.mp4    #'Dora_need_v151_65_chuyao_stand_white_17s.mp4'
+create_inference_result: 248d2613-6596-4679-a1f8-777e79a5c849.zip
+
+# test_create_video
+# 使用create_model_result,create_inference_result,default_audio
+result_video: xxx
+
+chuyao_stand_white_model: eaa25a7a-69ac-4e6c-89ad-c0e7a250b120_1692688400.zip
+chuyao_stand_white_inference: d7231e13-18e0-404f-914d-4ded28d14135.zip
+chuyao_stand_BlackDress_model: ff4cdd29-bdd2-4a6b-bb61-0ec4a10606ce_1692688456.zip
+chuyao_stand_BlackDress_inference: 8c0efe3d-9cad-46d8-8df8-c9cebd32d026.zip
+
+V150_68-chuyao_stand_BlackDress_model: 5a805786-ef0c-4346-90e5-2b3a9a91053d_1692851993.zip
+V150_68-chuyao_stand_BlackDress_inference: f6e1fba4-8391-40fb-a2fc-44a238f21f4d.zip
+
+V150_68-zhuzhu_model: 971999a0-423c-4904-84f4-0f22dec9ee0b_1692856552.zip
+V150_68-zhuzhu_inference: d69faec7-1d52-4e85-b793-b5842ed272ea.zip
+
+# test_four_qualities_to_create_model,'train_quality_low',
+# train_quality_normal,默认已训 train_quality_demo
+quality_list: [train_quality_high] #, train_quality_normal]
+qualities_model_list: []
+server_video_to_model: '1_test_origin_video/model_customer_service_girl1.mp4'
+
+# test_create_inference
+default_custom_video_to_inference: 'custom_source/custom_white_dress_aiqidao.mp4'
+
+# test_create_inference_interpolation
+create_inference_interpolation_result: xxx
+
+# test_pretrain_model_to_create_video
+# 用default_inference
+no_model: change_value2
+meimei_sit_model_list: [9c2d00df-b173-461e-afe3-b5530d7e3914_1692766823.zip, 2169d6f9-81ed-4335-a83a-2ab0ca831ed6_1692788732.zip,
+  e474bbb0-fb21-4051-a54d-1d1da6a841e4_1692785769.zip, e86be83d-d0d4-4ae2-8675-801012006a2a_1692785398.zip]
+miemei_sit_inference: 48f4cd00-9b20-4aab-b296-64655fa34d8b.zip   # '248d2613-6596-4679-a1f8-777e79a5c849.zip' 
+
+
+# test_create_custom_model_batch,客户素材验证
+custom_video_list_to_model: ['aopeng_white_shirt_woman.mp4','custom_blue_skirt_cairenhui_zhuzhu.mp4','custom_black_dress_renyimen_girl.mp4','custom_blue_stripe_skirt_hongsong_man.mp4','custom_white_dress_aiqidao.mp4'] #[custom_blue_skirt_cairenhui_zhuzhu.mp4,custom_blue_stripe_skirt_hongsong_man.mp4,aopeng_white_shirt_woman.mp4, custom_white_dress_aiqidao.mp4] # custom_black_dress_renyimen_girl.mp4,
+
+# test_create_model_batch
+video_list_to_model: ['chuyao_stand_BlackDress_2280MB_10min.mp4','ming_stand_BlackDress_1208MB_9min43s.mp4','qiang_stand_WhiteTshirt_1080p_4536MB_11min44s.mp4','female_pink_sit_1920X1080_10min33s.mp4','ming_stand_WhiteTshirt_2631MB_11min21s.mp4','ming_sit_WhiteTshirt_1320MB_10min26s.mp4']  #,'female_pink_sit_10min38s.mov'
+
+# test_create_inference_batch
+video_list_to_inference: [chuyao_stand_BlackDress_2280MB_1min15s.mp4,meimei_stand_WhiteSkirt_1080p_3461MB_1min_headsilence.mp4,meimei_sit_WhiteSkirt_2314MB_1min_headsilence_sure.mp4, chuyao_stand_BlackDress_2280MB_1min15s.mp4,chuyao_stand_WhiteSkirt_1080p_4618MB_1min_headsilence.mp4, female_pink_sit_1min_headsilence.mp4,qiang_stand_WhiteTshirt_1080p_4536MB_1min.mp4, ming_stand_WhiteTshirt_2631MB_1min.mp4,ming_stand_BlackDress_1208MB_1min.mp4]
+
+# test_create_inference_interpolation_batch
+custom_video_list_to_inference: [custom_blue_skirt_cairenhui_zhuzhu.mp4,custom_blue_stripe_skirt_hongsong_man.mp4,aopeng_white_shirt_woman.mp4] # custom_black_dress_renyimen_girl.mp4,
+# video_list_to_inference: ['custom_blue_skirt_cairenhui_zhuzhu.mp4','custom_blue_stripe_skirt_hongsong_man.mp4']                                                                                                                                                                                                                                                                                                                                                                              # ['female_pink_sit_1min_headsilence.mp4','MsXiaoZhang_704MB_1min.mp4','chuyao_stand_BlackDress_2280MB_1min15s.mp4']
+
+# test_create_video_batch
+audio_list: [chinese_girl_voice_3.wav, chinese_microsoft_girl_voice_2.wav, chinese_man_voice_1.wav,
+  chinese_microsoft_man_voice_2.wav, Female-English-Young-smooth-33s.WAV, English-male-13s.WAV]
+
+audio_list_unsual: [chinese_girl_voice_3-softwareTurn.amr, chinese_girl_voice_3_softwareTurn.m4a,
+  chinese_girl_voice_3_softwareTurn.mp3, chinese_girl_voice_3--softwareTurn.flac,
+  chinese_girl_voice_3--softwareTurn.mp2, chinese_girl_voice_3--softwareTurn.ogg,
+  no_word_inputEmpty1_10s.wav, Nguyen_Huu_Canh1_31s_mp3_to_wav.wav,
+  Nguyen_Huu_Canh_1_m4a_to_wav.wav,Nguyen_Huu_Canh1_31s_mp3_to_wav.wav, Nguyen_Huu_Canh_1_m4a_to_wav.wav] #  silence_noword_44bytes.WAV,
+chuyao_black_normal_model: aaa3df98-b936-4ab7-b279-0b2bb0c16a8d_1692857579.zip
+chuyao_black_normal_inference: a4be6dcc-6246-4a24-90db-17fa398549ce.zip
+
+
+
+# create_video_debug
+girl_audio_list: ['chinese_girl_voice_1.wav','chinese_girl_voice_2.wav','chinese_microsoft_girl_voice_1.wav','chinese_microsoft_girl_voice_2.wav','chinese_live_girl_voice_1.wav']
+boy_audio_list: ['chinese_man_voice_1.wav','chinese_man_voice_2.wav','chinese_microsoft_man_voice_1.wav','chinese_microsoft_man_voice_2.wav','chinese_live_man_voice_1.wav']
+
+chuyao_black_stand_model_list: ['0882ff02-0192-435e-bddf-7aa0c516e645_1692959321.zip'] #,'7df81707-e350-4b9d-98ff-f46f44692aa2_1692898418.zip']
+chuyao_stand_Black_inference: '01bc8155-971e-4fc0-b8b6-a4a90fe4c0b2.zip'
+
+normal_qiang_stand_white_model: ['f52f033a-b5c9-48d6-9814-be38072a3eb5_1692902994.zip']
+qiang_stand_white_inference: 'd96873a6-96c1-4f35-9638-5fe9bea7c48b.zip'
+
+normal_ming_stand_white_model: ['6dc34438-0432-4b44-892d-67fff2c3ae62_1692906675.zip']
+ming_stand_white_inference: '6ef7deb9-e77c-473e-bb0e-aff7f65b5155.zip'
+
+normal_ming_stand_BlackDress_model: ['556d04ae-f32b-48b2-9ede-138a905efd3e_1692959025.zip','9a7df398-d95f-4f66-81ab-8ac1d3ef577e_1692898113.zip']
+ming_stand_BlackDress_inference: '9cd35163-6c26-455c-b6b0-4ba2be903fa4.zip'
+
+
+normal_aopeng_white_shirt_woman_model: ['25fb1cda-7969-418c-9e5c-004c7d9dbeb5_1692952660.zip'] #,'45e5386e-7e5f-450f-94ad-c3cb27fc1cde_1692891503.zip']
+aopeng_white_shirt_woman_inference: '40befbac-060e-4584-aafe-a50721e3018a.zip'
+
+
+high_custom_black_dress_renyimen_girl_model: ['a4efc447-d741-42f0-80fc-00d0e7555a80_1692942289.zip'] #,'b908c081-6f59-42a3-9ee3-68254f2cf631_1692865194.zip']
+custom_black_dress_renyimen_girl_inference: 'ebf8845f-6d41-4e40-8673-5f4b10700e93.zip'
+
+
+normal_custom_blue_skirt_cairenhui_zhuzhu_model: ['9e3000e1-ae1b-4f09-8346-20f937c1c4a0_1692952770.zip','99143383-edc5-4e8e-bd8e-9ea7d28a17c4_1692888356.zip'] # ,'df0c74b5-5296-486a-b558-a4ad6cadb52e_1692807631.zip'                                                                  
+custom_blue_skirt_cairenhui_zhuzhu_inference: 'e99a2ed4-7bf8-43f7-be97-ab1353707db8.zip'
+
+normal_custom_blue_stripe_skirt_hongsong_man_model: ['875001d9-e247-49c6-b3ff-c21f8574e01c_1692889577.zip'] #['7bc74f26-1e31-42de-acba-34546a39d417_1692943178.zip'] #,'875001d9-e247-49c6-b3ff-c21f8574e01c_1692889577.zip','354fbdb9-829a-412a-8d3d-93b0039cee18_1692808606.zip']
+custom_blue_stripe_skirt_hongsong_man_inference: '42fca4bb-67e5-48c8-ae24-b4af2050ba3e.zip' 
+
+low_custom_white_dress_aiqidao_model: ['08bf7c2a-f35b-4bb6-b254-898d86a6ae24_1692911381.zip'] #,'a3323052-8580-4e95-8bc2-c1de2ddcaea0_1692893658.zip','c6cdf265-7052-4f1a-aa7b-b4b07970f4d3_1692909720.zip']
+custom_white_dress_aiqidao_inference: 'fdf4db84-d723-4340-a5df-c565c5c030f7.zip'
+
+customer_service_model: ['1a207e72-23f5-4413-aa15-37cc7d05d21b_1693205368.zip'] #['28cff91b-a7ba-4767-a8cd-c62e77913ae1_1693200026.zip']
+customer_service_inference: '0d4baa22-38b3-43eb-adc3-713b5dc58a32.zip'
+
+
+
+# rich v160_95
+
+high_chuyao_stand_WhiteSkirt_model: ['c32a5452-e248-42b9-b3b6-cfe419683f04_1693235401.zip']
+chuyao_stand_WhiteSkirt_inference: '32f83331-2d99-4799-bbe8-aaf711af5509.zip'
+
+v160_95_normal_custom_white_dress_aiqidao_model: ['a2d45bf4-bbb3-4820-b003-140a0e70544c/a2d45bf4-bbb3-4820-b003-140a0e70544c.zip']
+v160_95_custom_white_dress_aiqidao_inference: ['f863c4b9-58cc-4618-a6a4-85e519b7ac79_package.zip']

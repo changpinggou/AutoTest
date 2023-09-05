@@ -1,0 +1,12 @@
+{
+  "name": "digital_human_test",
+  "version": "1.5.1",
+  "description": "digital human autotest",
+  "repository": {
+    "type": "git",
+    "url": "git@git.e.coding.zego.cloud:dev/digitalhuman/DigitalHumanTest.git"
+  },
+  "feishu_webhook": "https://open.feishu.cn/open-apis/bot/v2/hook/4d600e43-836f-4744-a13f-a9bc77abe62e",
+  "author": "kiwi",
+  "license": "ISC"
+}
