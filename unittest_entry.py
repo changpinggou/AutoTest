@@ -45,10 +45,10 @@ def main(argv):
         os.mkdir(args.outputpath)
     
     if args.platform == 'linux':
-        print('\n linux run linux interface test')
+        print('\nlinux run linux interface test')
         run_case.run_case(docker_container_id, args.outputpath)
     elif args.platform == 'windows':
-        print('\n linux run windows interface test')
+        print('\nlinux run windows interface test')
 
     json_content = json.load(open('/home/aitest/result.json', 'r'))
     interface_json = json_content[0]
@@ -60,7 +60,7 @@ def main(argv):
 
     # write to new html
     # #临时目录output
-    output_dir = '/data2/jenkins_home/workspace/DigitalHuman/DigitalHumanTestLinux/result.html'
+    output_dir = os.path.abspath(os.path.join(args.outputpath, os.path.pardir, 'result.html'))
     with open(output_dir, 'w') as html_write:
         map['model_json'] = interface_json['model_json_path']
         map['inference_json'] = interface_json['inference_json_path']
@@ -77,7 +77,7 @@ def main(argv):
     map['link'] = url
     
     # write to new json
-    json_path = '/data2/jenkins_home/workspace/DigitalHuman/DigitalHumanTestLinux/result.json'
+    json_path = os.path.abspath(os.path.join(args.outputpath, os.path.pardir, 'result.json'))
     with open(json_path, 'w') as json_write:
         json.dump(map, json_write)
 
