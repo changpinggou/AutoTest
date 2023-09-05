@@ -23,7 +23,7 @@ class Logger:
 
         # 追加写入文件a ，设置utf-8 编码防止中文写入乱码
         logs_dir = os.path.join(PROJ_PARENT_ROOT,"logs")
-        if os.path.exists(logs_dir):
+        if not os.path.exists(logs_dir):
             os.mkdir(logs_dir)
         log_path = os.path.join(logs_dir,'{}.log'.format(log_file_name))
         test_log = logging.FileHandler(log_path, 'a', encoding='utf-8')
