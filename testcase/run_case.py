@@ -26,7 +26,7 @@ logger = pytest_log.log_test
 data_yaml = ReadElemet(fileName='data')
 PROJ_ROOT = os.path.dirname(os.path.abspath(__file__))
 
-def run_case(digital_server, output, runtype):
+def run_case(digital_server, output, testcasescope):
     # 将最新的digital_server写入配置文件
     os.chdir(PROJ_ROOT)
     if not os.path.exists(os.path.join(PROJ_ROOT, 'results')):
@@ -37,9 +37,9 @@ def run_case(digital_server, output, runtype):
     # todo 雪琴 这个模块我对参数的传入不太懂，按目前的理解发现限制很多，果断注释。pytest如果你需要使用，则一定要熟悉pytest的各种使用方法 --成记
     digital_human_instance = test_digital_human.Test_DigitalHuman()
     digital_human_instance.setup_class(yaml)
-    if runtype == 'CI':
+    if testcasescope == 'CI':
         digital_human_instance.test_great_change_serial_create(yaml['short_video'], yaml['short_video'], yaml['default_audio'], output)
-    elif runtype == 'P1':
+    elif testcasescope == 'P1':
         digital_human_instance.test_create_model(yaml['default_video'], yaml['high_quality'], output)
         digital_human_instance.test_create_inference(yaml['default_video'], output)
         digital_human_instance.test_create_video(yaml['default_model'], yaml['default_inference'], yaml['default_audio'], output)

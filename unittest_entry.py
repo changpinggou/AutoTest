@@ -46,7 +46,8 @@ def main(argv):
     
     if args.platform == 'linux':
         print('\nlinux run linux interface test')
-        run_case.run_case(docker_container_id, args.outputpath, args.runtype)
+        print('args.runtype is ')
+        run_case.run_case(docker_container_id, args.outputpath, args.testcasescope)
     elif args.platform == 'windows':
         print('\nlinux run windows interface test')
 
