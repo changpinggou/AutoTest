@@ -112,7 +112,7 @@ def send_wecom_notification(String webhook, Boolean success, String projectName,
 pipeline {
     agent { label 'docker-autotest' }
     options {
-        timeout(time: 50, unit: 'MINUTES') // 设置 30 分钟超时
+        timeout(time: 150, unit: 'MINUTES') // 设置 2.5小时超时
     }
 
     parameters {
