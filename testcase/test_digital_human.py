@@ -709,12 +709,7 @@ class Test_DigitalHuman:
                 self.result[0]['inference_json_path'] = new_inference_json_path
                 self.result[0]['video_json_path'] = new_video_json_path
             
-            ## todo 雪琴 如果没有直接吐出内容给主调层就要生成到本地，外面无法通过log去获取你的json；或者实现回吐json内容 --成记
             logger.info(f'result_product for test_great_change_serial_create:{result_great_change}\n')
-            json_file = open('/home/aitest/result.json', 'w')
-            json_conent = json.dumps(self.result, indent=4)
-            json_file.write(json_conent)
-            json_file.close()
             #end
 
     @allure.feature('冒烟测试主流程')
@@ -833,11 +828,12 @@ class Test_DigitalHuman:
     @allure.feature('冒烟测试主流程')
     @allure.title('create_model')
     @pytest.mark.P1
-    @pytest.mark.parametrize(('video_to_model', 'quality'), [(yaml['default_video'], yaml['high_quality'])])
-    def test_create_model(self, video_to_model, quality):
+    @pytest.mark.parametrize(('video_to_model', 'quality', 'output'), [(yaml['default_video'], yaml['high_quality'], 'dora fix it')])
+    def test_create_model(self, video_to_model, quality, output):
         result_model = self.create_model_from_video(video_to_model, quality)
         result_model["case_name"] = "test_create_model"
         result_model_dict = {}
+        unsuccessful = False
         try:
             assert result_model["code"] == 0
             self.result[0]["PASS_nums"] = self.result[0]["PASS_nums"] + 1
@@ -848,21 +844,33 @@ class Test_DigitalHuman:
             self.result.append(result_model)
             data_yaml.update_yaml(k='create_model_result', v=result_model["output"])
         except AssertionError as e:
+            unsuccessful = True
+            print(str(e))
             logger.error(e)
             self.result[0]["Fail_nums"] = self.result[0]["Fail_nums"] + 1
             self.result[0]["Fail_cases"].append("test_create_model")
             self.result.insert(1, result_model)
             raise
         finally:
+            #todo 雪琴 这里我先临时把逻辑写到这里，你之后组织一下 --成记
+            if unsuccessful == False:
+                new_model_json_path = f"{os.path.join(output, self.result_great_change_model_json_path.split('/')[-1])}"
+                command = ['sudo', 'mv', self.result_great_change_model_json_path, new_model_json_path]
+                subprocess.run(command)
+    
+                self.result[0]['model_json_path'] = new_model_json_path
+            
             logger.info(f'result_product for result_model:{result_model}\n')
+            
 
     @allure.feature('冒烟测试主流程')
     @allure.title('create_inference')
     @pytest.mark.P1
-    @pytest.mark.parametrize(('video_to_inference'), [(yaml['default_video'])])  #
-    def test_create_inference(self, video_to_inference):
+    @pytest.mark.parametrize(('video_to_inference', 'output'), [(yaml['default_video'], 'dora fix it')])  #
+    def test_create_inference(self, video_to_inference, output):
         result_inference = self.create_inference_package(video_to_inference)
         result_inference["case_name"] = "test_create_inference"
+        unsuccessful = False
         try:
             assert result_inference["code"] == 0
             self.result[0]["PASS_nums"] = self.result[0]["PASS_nums"] + 1
@@ -871,23 +879,33 @@ class Test_DigitalHuman:
             data_yaml.update_yaml(k='create_inference_result', v=result_inference["output"])
             self.result.append(result_inference)
         except AssertionError as e:
+            unsuccessful = True
+            print(str(e))
             logger.error(e)
             self.result[0]["Fail_nums"] = self.result[0]["Fail_nums"] + 1
             self.result[0]["Fail_cases"].append("test_create_inference")
             self.result.insert(1, result_inference)
             raise
         finally:
+            #todo 雪琴 这里我先临时把逻辑写到这里，你之后组织一下 --成记
+            if unsuccessful == False:
+                new_inference_json_path = f"{os.path.join(output, self.result_great_change_infernece_json_path.split('/')[-1])}"
+                command = ['sudo', 'mv', self.result_great_change_infernece_json_path, new_inference_json_path]
+                subprocess.run(command)
+                self.result[0]['inference_json_path'] = new_inference_json_path
+                
             logger.info(f'result_inference:{result_inference}\n')
 
     @allure.feature('冒烟测试主流程')
     @allure.title('create_video')
     @pytest.mark.P1
     @pytest.mark.flag
-    @pytest.mark.parametrize(('model_name', 'inference_name', 'audio_name'),
-                             [(yaml['default_model'], yaml['default_inference'], yaml['default_audio'])])
-    def test_create_video(self, model_name, inference_name, audio_name):
+    @pytest.mark.parametrize(('model_name', 'inference_name', 'audio_name', 'output'),
+                             [(yaml['default_model'], yaml['default_inference'], yaml['default_audio'], 'dora fix it')])
+    def test_create_video(self, model_name, inference_name, audio_name, output):
         result_video = self.create_video_from_audio(model_name, inference_name, audio_name)
         result_video["case_name"] = "test_create_video"
+        unsuccessful = False
         try:
             assert result_video["code"] == 0
             self.result[0]["PASS_nums"] = self.result[0]["PASS_nums"] + 1
@@ -895,12 +913,21 @@ class Test_DigitalHuman:
             self.result[0]["result_video_list"].append(result_video["output"])
             self.result.append(result_video)
         except AssertionError as e:
+            unsuccessful = True
+            print(str(e))
             logger.error(e)
             self.result[0]["Fail_nums"] = self.result[0]["Fail_nums"] + 1
             self.result[0]["Fail_cases"].append("test_create_video")
             self.result.insert(1, result_video)
             raise
         finally:
+            # todo 雪琴 这里我先临时把逻辑写到这里，你之后组织一下 --成记
+            if unsuccessful == False:
+                new_video_json_path = f"{os.path.join(output, self.result_great_change_video_json_path.split('/')[-1])}"
+                command = ['sudo', 'mv', self.result_great_change_video_json_path, new_video_json_path]
+                subprocess.run(command)
+                self.result[0]['video_json_path'] = new_video_json_path
+            
             logger.info(f'result_product for result_video:{result_video}\n')
 
     @allure.feature('全功能用例')

@@ -26,19 +26,25 @@ logger = pytest_log.log_test
 data_yaml = ReadElemet(fileName='data')
 PROJ_ROOT = os.path.dirname(os.path.abspath(__file__))
 
-def run_case(digital_server, output):
+def run_case(digital_server, output, runtype):
     # 将最新的digital_server写入配置文件
     os.chdir(PROJ_ROOT)
+    if not os.path.exists(os.path.join(PROJ_ROOT, 'results')):
+        os.mkdir(os.path.join(PROJ_ROOT, 'results'))
+        
     data_yaml.update_yaml(k='digital_server',v=digital_server)
     yaml = data_yaml.All_element()
     # todo 雪琴 这个模块我对参数的传入不太懂，按目前的理解发现限制很多，果断注释。pytest如果你需要使用，则一定要熟悉pytest的各种使用方法 --成记
     digital_human_instance = test_digital_human.Test_DigitalHuman()
     digital_human_instance.setup_class(yaml)
-    digital_human_instance.test_great_change_serial_create(yaml['short_video'], yaml['short_video'], yaml['default_audio'], output)
+    if runtype == 'CI':
+        digital_human_instance.test_great_change_serial_create(yaml['short_video'], yaml['short_video'], yaml['default_audio'], output)
+    elif runtype == 'P1':
+        digital_human_instance.test_create_model(yaml['default_video'], yaml['high_quality'], output)
+        digital_human_instance.test_create_inference(yaml['default_video'], output)
+        digital_human_instance.test_create_video(yaml['default_model'], yaml['default_inference'], yaml['default_audio'], output)
+    
+    digital_human_instance.teardown_method()    
     # pytest.main(['./test_digital_human.py::Test_DigitalHuman::test_great_change_serial_create','-sv'], f'--output={output}') # test_great_change_serial_create
     logger.info('everything is done')
-
-# if __name__ == '__main__':
-#     run_case()
-#     # dig = RE["digital_server"]
-#     # print(dig)
+    

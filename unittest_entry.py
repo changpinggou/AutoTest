@@ -46,11 +46,11 @@ def main(argv):
     
     if args.platform == 'linux':
         print('\nlinux run linux interface test')
-        run_case.run_case(docker_container_id, args.outputpath)
+        run_case.run_case(docker_container_id, args.outputpath, args.runtype)
     elif args.platform == 'windows':
         print('\nlinux run windows interface test')
 
-    json_content = json.load(open('/home/aitest/result.json', 'r'))
+    json_content = json.load(open(os.path.join(PROJ_ROOT, 'results', 'result.json'), 'r'))
     interface_json = json_content[0]
     map = {
         "type" : interface_json['action'],

@@ -124,7 +124,12 @@ pipeline {
 
         string(name: 'LINUX_DOCKER_FULL_NAME', defaultValue: '',  description: '完整的被测docker路径\n')
         string(name: 'LINUX_DOCKER_NAME',defaultValue: '',  description: '被测docker名\n')
-        string(name: 'TEST_CASE_SCOPE',defaultValue: 'CI',  description: '测试用例范畴\n')
+        choice(
+            name: 'TEST_CASE_SCOPE',
+            choices: ['CI', 'P1'],
+            description: '测试用例范畴\n'
+        )
+        // string(name: 'TEST_CASE_SCOPE',defaultValue: 'CI',  description: '测试用例范畴\n')
         string(name: 'BRANCH', defaultValue: 'master', description: '要构建的分支')
         string(name: 'HOST_BRANCH', defaultValue: 'master', description: '被测试的数字人分支标志')
         string(name: 'HOST_COMMITID', defaultValue: '8d7d79', description: '被测试的数字人Commit节点')
