@@ -26,7 +26,7 @@ logger = pytest_log.log_test
 data_yaml = ReadElemet(fileName='data')
 PROJ_ROOT = os.path.dirname(os.path.abspath(__file__))
 
-def run_case(digital_server, output, testcasescope):
+def run_case(digital_server, output, testcasescope, jenkins_num):
     # 将最新的digital_server写入配置文件
     os.chdir(PROJ_ROOT)
     if not os.path.exists(os.path.join(PROJ_ROOT, 'results')):

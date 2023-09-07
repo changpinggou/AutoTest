@@ -17,6 +17,7 @@ def __parse_args(args):
     parser.add_argument('--platform', type=str, choices=['linux', 'windows'], default='linux',
                         help='性能测试平台, default:linux')
     parser.add_argument('--jenkins', default=False, action='store_true',  help='Whether build in jenkins')
+    parser.add_argument('--buildnumber', type=str, help='jenkins自行建立的序号')
     parser.add_argument('--dockername', type=str, default='v1.5.1.64-202308161414-d450a5d8', help='打包出来的docker文件名')
     parser.add_argument('--digithumanstuburl', type=str, default='', help='打包出来的windows产物压缩包地址')
     parser.add_argument('--digithumanstublocalpath', type=str, default='', help='打包出来的windows产物压缩包本地地址')
@@ -47,7 +48,7 @@ def main(argv):
     if args.platform == 'linux':
         print('\nlinux run linux interface test')
         print('args.runtype is ')
-        run_case.run_case(docker_container_id, args.outputpath, args.testcasescope)
+        run_case.run_case(docker_container_id, args.outputpath, args.testcasescope, args.buildnumber)
     elif args.platform == 'windows':
         print('\nlinux run windows interface test')
 

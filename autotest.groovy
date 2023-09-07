@@ -225,6 +225,7 @@ pipeline {
 
                     def outTempDir = "${WORKSPACE}/__out"
                     args = "--jenkins --platform=" + params.PLATFORM + " "
+                    args+= "--buildnumber=" + params.BUILD_NUMBER + " "
                     args+= "--dockername=" + params.LINUX_DOCKER_NAME + " "
                     args+= "--outtempdir=" + outTempDir + " "
                     args+= "--testcasescope=" + params.TEST_CASE_SCOPE + " "
