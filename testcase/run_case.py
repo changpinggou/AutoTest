@@ -44,7 +44,7 @@ def run_case(digital_server, output, case_scope, jenkins_num):
         digital_human_instance.test_create_inference(yaml['default_video'], output)
         digital_human_instance.test_create_video(yaml['default_model'], yaml['default_inference'], yaml['default_audio'], output)
     elif case_scope == 'ALL_CASES':
-        print('')
+        print('more cases')
     
     digital_human_instance.teardown_method()    
     # pytest.main(['./test_digital_human.py::Test_DigitalHuman::test_great_change_serial_create','-sv'], f'--output={output}') # test_great_change_serial_create
