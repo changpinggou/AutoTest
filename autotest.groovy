@@ -126,8 +126,8 @@ pipeline {
         string(name: 'LINUX_DOCKER_NAME',defaultValue: '',  description: '被测docker名\n')
         choice(
             name: 'TEST_CASE_SCOPE',
-            choices: ['CI', 'P1'],
-            description: '测试用例范畴\n'
+            choices: ['SMOKR_CASES', 'API_CASES', 'ALL_CASES'],
+            description: '测试用例范畴\nSMOKE_CASES:主流程的快速验证\nAPI_CASES:涉及基本的P0,P1用例\nALL_CASES:更多的用例包含P2\n'
         )
         // string(name: 'TEST_CASE_SCOPE',defaultValue: 'CI',  description: '测试用例范畴\n')
         string(name: 'BRANCH', defaultValue: 'master', description: '要构建的分支')

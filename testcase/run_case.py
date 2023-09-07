@@ -26,7 +26,7 @@ logger = pytest_log.log_test
 data_yaml = ReadElemet(fileName='data')
 PROJ_ROOT = os.path.dirname(os.path.abspath(__file__))
 
-def run_case(digital_server, output, testcasescope, jenkins_num):
+def run_case(digital_server, output, case_scope, jenkins_num):
     # 将最新的digital_server写入配置文件
     os.chdir(PROJ_ROOT)
     if not os.path.exists(os.path.join(PROJ_ROOT, 'results')):
@@ -37,12 +37,14 @@ def run_case(digital_server, output, testcasescope, jenkins_num):
     # todo 雪琴 这个模块我对参数的传入不太懂，按目前的理解发现限制很多，果断注释。pytest如果你需要使用，则一定要熟悉pytest的各种使用方法 --成记
     digital_human_instance = test_digital_human.Test_DigitalHuman()
     digital_human_instance.setup_class(yaml)
-    if testcasescope == 'CI':
+    if case_scope == 'SMOKE_CASES':
         digital_human_instance.test_great_change_serial_create(yaml['short_video'], yaml['short_video'], yaml['default_audio'], output)
-    elif testcasescope == 'P1':
+    elif case_scope == 'API_CASES':
         digital_human_instance.test_create_model(yaml['default_video'], yaml['high_quality'], output)
         digital_human_instance.test_create_inference(yaml['default_video'], output)
         digital_human_instance.test_create_video(yaml['default_model'], yaml['default_inference'], yaml['default_audio'], output)
+    elif case_scope == 'ALL_CASES':
+        print('')
     
     digital_human_instance.teardown_method()    
     # pytest.main(['./test_digital_human.py::Test_DigitalHuman::test_great_change_serial_create','-sv'], f'--output={output}') # test_great_change_serial_create
