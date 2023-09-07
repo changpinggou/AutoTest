@@ -110,9 +110,9 @@ def send_wecom_notification(String webhook, Boolean success, String projectName,
 }
 
 pipeline {
-    agent { label 'winpyinstaller' }
+    agent { label 'winautotest' }
     options {
-        timeout(time: 50, unit: 'MINUTES') // 设置 30 分钟超时
+        timeout(time: 180, unit: 'MINUTES') // 设置 30 分钟超时
     }
 
     parameters {
@@ -175,6 +175,19 @@ pipeline {
                         TRIGGERED_USER = TRIGGERED_USER + ",${params.NOTICE_USER}"
                     }
                     echo "TRIGGERED_USER: ${TRIGGERED_USER}"
+
+                    def codePath = "${WORKSPACE}\\AutoTest"
+                    def codeExists = fileExists(codePath)
+
+                    if (!codeExists) {
+                      bat(label: '', returnStdout: true, script: "git clone https://github.com/changpinggou/AutoTest.git")
+                    }
+                    dir(codePath) {
+                      echo "${codePath}"
+                      bat(label: '', returnStdout: true, script: "git reset --hard HEAD")
+                      bat(label: '', returnStdout: true, script: "git checkout feature/dora")
+                      bat(label: '', returnStdout: true, script: "git pull --rebase")
+                    }
                 }
             }
         }
@@ -195,11 +208,16 @@ pipeline {
                     args+= "--digithumanstublocalpath=" + params.WINDOWS_DIST_LOCAL_PATH + " "
                     args+= "--outtempdir=" + outTempDir + " "
                     args+= "--testcasescope=" + params.TEST_CASE_SCOPE + " "
-
-                    echo "windows unittest begine"
-                    cmd = "python -u unittest_entry.py ${args}"
-                    def returnValue = bat(label: '', returnStdout: true, script: cmd)
-                    echo "windows unittest end: ${returnValue}"
+                    args+= "--outputpath=" + "${WORKSPACE}/results" + " "
+                    echo "windows unittest begin"
+                    echo "args: ${args}"
+                    dir ("${WORKSPACE}\\AutoTest"){
+                      cmd = "python -u unittest_entry.py ${args}"
+                      def returnValue = bat(label: '', returnStdout: true, script: cmd)
+                      echo "windows unittest end: ${returnValue}"
+                    }
+                    
+                    
                 }
             }
         }
