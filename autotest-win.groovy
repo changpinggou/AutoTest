@@ -185,7 +185,7 @@ pipeline {
                     dir(codePath) {
                       echo "${codePath}"
                       bat(label: '', returnStdout: true, script: "git reset --hard HEAD")
-                      bat(label: '', returnStdout: true, script: "git checkout feature/dora")
+                      bat(label: '', returnStdout: true, script: "git checkout ${params.BRANCH}")
                       bat(label: '', returnStdout: true, script: "git pull --rebase")
                     }
                 }
@@ -212,9 +212,9 @@ pipeline {
                     echo "windows unittest begin"
                     echo "args: ${args}"
                     dir ("${WORKSPACE}\\AutoTest"){
-                      cmd = "python -u unittest_entry.py ${args}"
-                      def returnValue = bat(label: '', returnStdout: true, script: cmd)
-                      echo "windows unittest end: ${returnValue}"
+                        cmd = "python -u unittest_entry.py ${args}"
+                        def returnValue = bat(label: '', returnStdout: true, script: cmd)
+                        echo "windows unittest end: ${returnValue}"
                     }
                     
                     
@@ -232,10 +232,13 @@ pipeline {
                     args+= "--outtempdir=" + outTempDir + " "
                     args+= "--testcasescope=" + params.TEST_CASE_SCOPE + " "
                     
-                    echo "windows perftest begine"
-                    cmd = "python -u perftest_entry.py ${args}"
-                    def returnValue = bat(label: '', returnStdout: true, script: cmd)
-                    echo "windows perftest end: ${returnValue}"
+                    echo "windows perftest begin"
+                    echo "args: ${args}"
+                    dir ("${WORKSPACE}\\AutoTest"){
+                        cmd = "python -u perftest_entry.py ${args}"
+                        def returnValue = bat(label: '', returnStdout: true, script: cmd)
+                        echo "windows perftest end: ${returnValue}"
+                    }
                 }
             }
         }
