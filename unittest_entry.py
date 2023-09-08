@@ -29,6 +29,7 @@ def __parse_args(args):
 
 def run_linux_interface(args):
     docker_controller = docker_ctrl.DockerController()
+    docker_container_id, docker_server_name = docker_controller.get_docker(args.dockername)
     if not os.path.exists(args.outputpath):
         os.mkdir(args.outputpath)
     
