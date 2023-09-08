@@ -27,29 +27,13 @@ def __parse_args(args):
 
     return parser.parse_args(args)
 
-    
-def main(argv):
-    os.chdir(PROJ_ROOT)
-    args = __parse_args(argv)
-    print('\n[*] platform={} '.format(args.platform))
-    print('\n[*] dockername={} '.format(args.dockername))
-    print('\n[*] digithumanstuburl={} '.format(args.digithumanstuburl))
-    print('\n[*] digithumanstublocalpath={} '.format(args.digithumanstublocalpath))
-    print('\n[*] runtype={} '.format(args.runtype))
-    print('\n[*] outtempdir={} '.format(args.outtempdir))
-    print('\n[*] outputpath={} '.format(args.outputpath))
-    
+def run_linux_interface(args):
     docker_controller = docker_ctrl.DockerController()
-    docker_container_id, docker_server_name = docker_controller.get_docker(args.dockername)
     if not os.path.exists(args.outputpath):
         os.mkdir(args.outputpath)
     
-    if args.platform == 'linux':
-        print('\nlinux run linux interface test')
-        print('args.runtype is ')
-        run_case.run_case(docker_container_id, args.outputpath, args.testcasescope)
-    elif args.platform == 'windows':
-        print('\nlinux run windows interface test')
+    #interface main function   
+    run_case.run_case(docker_container_id, args.outputpath, args.testcasescope)
 
     json_content = json.load(open(os.path.join(PROJ_ROOT, 'results', 'result.json'), 'r'))
     interface_json = json_content[0]
@@ -60,7 +44,6 @@ def main(argv):
     }
 
     # write to new html
-    # #临时目录output
     output_dir = os.path.abspath(os.path.join(args.outputpath, os.path.pardir, 'result.html'))
     with open(output_dir, 'w') as html_write:
         map['model_json'] = interface_json['model_json_path']
@@ -83,7 +66,24 @@ def main(argv):
         json.dump(map, json_write)
 
     docker_controller.del_docker(docker_container_id)
-
+    
+def main(argv):
+    os.chdir(PROJ_ROOT)
+    args = __parse_args(argv)
+    print('\n[*] platform={} '.format(args.platform))
+    print('\n[*] dockername={} '.format(args.dockername))
+    print('\n[*] digithumanstuburl={} '.format(args.digithumanstuburl))
+    print('\n[*] digithumanstublocalpath={} '.format(args.digithumanstublocalpath))
+    print('\n[*] runtype={} '.format(args.runtype))
+    print('\n[*] outtempdir={} '.format(args.outtempdir))
+    print('\n[*] outputpath={} '.format(args.outputpath))
+    
+    if args.platform == 'linux':
+        print('\nrun linux interface test')
+        run_linux_interface(args)
+    elif args.platform == 'windows':
+        print('\nrun windows interface test')
+        print('\nwindow test finish')
     return 0
 
 if __name__ == '__main__':
