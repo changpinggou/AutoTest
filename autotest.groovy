@@ -126,7 +126,7 @@ pipeline {
         string(name: 'LINUX_DOCKER_NAME',defaultValue: '',  description: '被测docker名\n')
         choice(
             name: 'TEST_CASE_SCOPE',
-            choices: ['CI', 'P1'],
+            choices: ['SMOKE_CASES', 'API_CASES', 'ALL_CASES'],
             description: '测试用例范畴\n'
         )
         // string(name: 'TEST_CASE_SCOPE',defaultValue: 'CI',  description: '测试用例范畴\n')
@@ -195,19 +195,6 @@ pipeline {
                     def output = sh(script: "bash /data2/AutoTest/git_load.sh ${WORKSPACE} ${repository} ${env.BRANCH}", returnStdout: true)
                     echo output
 
-                    // 获取最新 commit 的 ID (暂时不走拉取库形式，所以注释掉)
-                    // env.GIT_COMMIT_ID = sh(script: "cd ${WORKSPACE} && git rev-parse --short HEAD", returnStdout: true).trim()
-                    // def sdkCloneDir = "${WORKSPACE}/applechangtest"
-                    // def temp = new File(sdkCloneDir)
-                    // if(!temp.exists()){
-                    //     temp.mkdir()
-                    // }
-                    // dir(sdkCloneDir) {
-                    //     checkout scmGit(branches: [[name: params.BRANCH]], extensions: [], userRemoteConfigs: [[credentialsId: '24f85527-7905-4551-873c-1173e0a87733', url: 'git@github.com:changpinggou/AutoTest.git']])
-                    // }
-                    // 当前还是用git的所有文件替换到workspace上去
-                    // sh(script: "rm -r ${WORKSPACE}/* && rm -rf ${WORKSPACE}/* && cp /data2/AutoTest/ ${WORKSPACE}", returnStdout: true)
-
                 }
             }
         }
@@ -230,7 +217,7 @@ pipeline {
                     args+= "--testcasescope=" + params.TEST_CASE_SCOPE + " "
                     // 临时输出参数
                     args+= "--outputpath=" + "${WORKSPACE}/results" + " "
-                    // args+= "--outputpath=" + params.outputpath + " "
+                    args+= "--buildnumber=" + "${BUILD_NUMBER}" + " "
                     
                     echo "args:${args}"
                     cmd = "python3 -u AutoTest/unittest_entry.py ${args}"
@@ -239,24 +226,25 @@ pipeline {
             }
         }
 
-        // stage('linux-PerfTest') {
-        //     steps {
-        //         script {
-        //             // 启动单元测试
-        //             // platform = params.PLATFORM
-        //             // if(params.PLATFORM == 'both'){
-        //             //     platform='linux'
-        //             // }
-        //             // def outTempDir = "${WORKSPACE}\\__out"
-        //             // args = "--jenkins --platform=" + params.PLATFORM + " "
-        //             // args+= "--dockername=" + params.LINUX_DOCKER_NAME + " "
-        //             // args+= "--outtempdir=" + outTempDir + " "
-        //             // args+= "--testcasescope=" + params.TEST_CASE_SCOPE + " "
-        //             // cmd = "python3 -u perftest_entry.py ${args}"
-        //             // sh(script: cmd, label: STAGE_NAME)
-        //         }
-        //     }
-        // }
+        stage('linux-PerfTest') {
+            steps {
+                script {
+                    // 启动单元测试
+                    // platform = params.PLATFORM
+                    // if(params.PLATFORM == 'both'){
+                    //     platform='linux'
+                    // }
+                    // def outTempDir = "${WORKSPACE}\\__out"
+                    // args = "--jenkins --platform=" + params.PLATFORM + " "
+                    // args+= "--dockername=" + params.LINUX_DOCKER_NAME + " "
+                    // args+= "--outtempdir=" + outTempDir + " "
+                    // args+= "--testcasescope=" + params.TEST_CASE_SCOPE + " "
+                    // cmd = "python3 -u perftest_entry.py ${args}"
+                    // sh(script: cmd, label: STAGE_NAME)
+                    echo "linux-perfTest finish"
+                }
+            }
+        }
     }
     post {
         success {

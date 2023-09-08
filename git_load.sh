@@ -12,9 +12,9 @@ if [ ! -d complete_path ]; then
     cd $workspace
     echo "git clone $git_url"
     git clone $git_url
-    cd $folder_name
 fi
 
+cd $folder_name
 git reset --hard HEAD
 git pull --rebase
 git checkout $git_branch
