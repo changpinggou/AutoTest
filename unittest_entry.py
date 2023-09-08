@@ -38,36 +38,6 @@ def run_linux_interface(args):
     run_case.run_case(docker_container_id, args.outputpath, args.testcasescope)
     # run_case.run_case(docker_container_id, args.outputpath, args.testcasescope, args.buildnumber)
 
-    json_content = json.load(open(os.path.join(PROJ_ROOT, 'results', 'result.json'), 'r'))
-    interface_json = json_content[0]
-    map = {
-        "type" : interface_json['action'],
-        "date" : interface_json['create_time'],
-        "state" : f"All Task: {str(interface_json['PASS_nums'] + interface_json['Fail_nums'])};Success:{str(interface_json['PASS_nums'])},Faild:{str(interface_json['Fail_nums'])}"
-    }
-
-    # write to new html
-    output_dir = os.path.abspath(os.path.join(args.outputpath, os.path.pardir, 'result.html'))
-    with open(output_dir, 'w') as html_write:
-        map['model_json'] = interface_json['model_json_path']
-        map['inference_json'] = interface_json['inference_json_path']
-        map['video_json'] = interface_json['video_json_path']
-        html_content = json2html.convert(json=map)
-        html_write.write(html_content)
-
-    artifact_name = output_dir.split(os.path.sep)[-1]
-    artifactory = ZegoArtifactory()
-    artifactory.set_raise_exception(True)
-    dockername = args.dockername
-    artifactory.set_version(dockername.split('-')[0] + '_' + map['date'])
-    url = artifactory.upload('digithuman', 'public', artifact_name, output_dir)
-    map['link'] = url
-    
-    # write to new json
-    json_path = os.path.abspath(os.path.join(args.outputpath, os.path.pardir, 'result.json'))
-    with open(json_path, 'w') as json_write:
-        json.dump(map, json_write)
-
     docker_controller.del_docker(docker_container_id)
     
 def main(argv):

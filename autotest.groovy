@@ -216,7 +216,7 @@ pipeline {
                     args+= "--outtempdir=" + outTempDir + " "
                     args+= "--testcasescope=" + params.TEST_CASE_SCOPE + " "
                     // 临时输出参数
-                    args+= "--outputpath=" + "${WORKSPACE}/results" + " "
+                    args+= "--outputpath=" + "${WORKSPACE}" + " "
                     args+= "--buildnumber=" + "${BUILD_NUMBER}" + " "
                     
                     echo "args:${args}"
@@ -250,8 +250,8 @@ pipeline {
         success {
             script {
                 // 读取 result.json 文件并解析为 JSON 对象
-                def resultJsonPath = "${WORKSPACE}/result.json"
-                echo "resultJsonPath: ${resultJsonPath}"
+                def resultDir = "${WORKSPACE}/sys_logs_${BUILD_NUMBER}"
+                def resultJsonPath = "${resultDir}/result.json"
                 // 拼接产物信息
                 def resultJsonObj = readJSON(file: resultJsonPath)
                 // 构造通知消息
@@ -261,19 +261,21 @@ pipeline {
                 }else{
                     mdBody += "<br/>- <font color='grey'>产物: </font>"
                     // 获取字典中所有键的集合
-                    def keys = resultJsonObj.keySet()
+                    def keys = resultJsonObj[0].keySet()
                     for (def key in keys) {
-                        if(key == "link"){
-                            mdBody += "<br/> - ${key}: [${resultJsonObj[key]}](${resultJsonObj[key]})"
-                        }else if(resultJsonObj[key].endsWith('.json') || resultJsonObj[key].endsWith('.log')){
-                            echo "originPath: ${resultJsonObj[key]}"
-                            def cSubFileName = "results/" + resultJsonObj[key].substring(resultJsonObj[key].lastIndexOf('/') + 1)
-                            echo "subFileName: ${cSubFileName}"
-                            archiveArtifacts cSubFileName
-                        }else{
-                            mdBody += "<br/> - ${key}: ${resultJsonObj[key]}"
+                        if (key == "pass_nums" || key == "fail_nums") {
+                            def content = key == "pass_nums" ? "通过数量" : "失败数量"
+                            mdBody += "<br/> - ${content}: ${resultJsonObj[key]}"
+                        }
+                        else if (key == "fail_cases") {
+                            mdBody += "<br/> - 失败cases: ${resultJsonObj[key]}"
                         }
                     }
+                    archiveArtifacts "${resultDir}"
+
+                    //todo 第一版本先直接暂时jenkins制品库，第二版再展示allure模块的东西 --shingkee
+                    def url = "http://jenkins.zegokiwi.cn/job/DigitalHuman/job/DigitalHumanTestLinux/${BUILD_BUMBER}/artifact/"
+                    mdBody += "<br/> - jenkins制品库链接: [${url}](${url})"
                 }
 
 
@@ -289,7 +291,6 @@ pipeline {
 
                 // 归档产物信息文件到 Jenkins 制品库
                 archiveArtifacts 'products.json'
-                archiveArtifacts 'result.html'
 
                 echo "SUCCESS!!! BUILD_VERSION=${env.BUILD_VERSION}"
                 
