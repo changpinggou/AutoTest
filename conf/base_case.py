@@ -61,7 +61,10 @@ class BaseCase:
             print(f'video_name: {video_full_path}')
 
         result_json = f"{create_model_log}.json"
-        cmd_log_path = os.path.join(PROJ_PARENT_ROOT,"run_logs",f"{create_model_log}.log")  # 终端输出日志
+        run_log_paths = os.path.join(PROJ_PARENT_ROOT,"run_logs")
+        if os.path.exists(run_log_paths) is False:
+            os.mkdir(run_log_paths)
+        cmd_log_path = os.path.join(run_log_paths, f"{create_model_log}.log")  # 终端输出日志
         print(f'cmd_log_path:{cmd_log_path}\n')
         cmd = f"echo 'zegoai@test' | sudo -S docker exec -i {self.digital_server} .{os.path.sep}dist{os.path.sep}run{os.path.sep}run --action create_model_from_video --video_path {video_full_path} --data_root {os.path.sep}data --profile {quality} --output_file sys_logs{os.path.sep}{result_json} --log_file sys_logs{os.path.sep}{create_model_log}.log --debug > {cmd_log_path} 2>&1"
         #print(f"create_model command:{cmd}\n")
@@ -126,7 +129,10 @@ class BaseCase:
         video_full_path = 'test' + os.path.sep + video_path + os.path.sep + video_name
         create_inference_log = 'create_inference_package_' +video_name.split('.')[0]+'_'+start_time
         result_json = f"{create_inference_log}.json"
-        cmd_log_path = os.path.join(PROJ_PARENT_ROOT,"run_logs",f"{create_inference_log}.log")  # 终端输出日志
+        run_logs_path = os.path.join(PROJ_PARENT_ROOT,"run_logs")
+        if os.path.exists(run_logs_path) is False:
+            os.mkdir(run_logs_path)
+        cmd_log_path = os.path.join(run_logs_path, f"{create_inference_log}.log")  # 终端输出日志
         if label_config_base64:
             cmd = f"echo 'zegoai@test' | sudo -S docker exec -i {self.digital_server} .{os.path.sep}dist{os.path.sep}run{os.path.sep}run --action create_inference_package --video_path {video_full_path} --data_root {os.path.sep}data --output_file sys_logs{os.path.sep}{result_json} --log_file sys_logs{os.path.sep}{create_inference_log}.log --debug  {label_config_base64} > {cmd_log_path} 2>&1"
         else:
@@ -194,7 +200,10 @@ class BaseCase:
         create_video_log = 'create_video_'+model_mark+ '_'+audio_name.split('.')[0]+'_'+start_time
 
         result_json = f"{create_video_log}.json"
-        cmd_log_path = os.path.join(PROJ_PARENT_ROOT,"run_logs",f"{create_video_log}.log")  # 终端输出日志
+        run_logs_path = os.path.join(PROJ_PARENT_ROOT,"run_logs")
+        if os.path.exists(run_logs_path) is False:
+            os.mkdir(run_logs_path)
+        cmd_log_path = os.path.join(run_logs_path, f"{create_video_log}.log")  # 终端输出日志
         print(f'cmd_log_path:{cmd_log_path}\n')
         cmd = f"echo 'zegoai@test' | sudo -S docker exec -i {self.digital_server} .{os.path.sep}dist{os.path.sep}run{os.path.sep}run --action create_video_from_audio --model_path models{os.path.sep}{model_name} --inference_package_path inference_packages{os.path.sep}{inference_name} --data_root {os.path.sep}data --log_file sys_logs{os.path.sep}{create_video_log}.log --output_file sys_logs{os.path.sep}{result_json} --audio_path {audio_full_path} --audio_language 'zh-CN' --use_pretrain_model {is_pretrain} > {cmd_log_path}"        #print(f"create_model command:{cmd}\n")
         with ProcessPoolExecutor(max_workers=5) as executor:
