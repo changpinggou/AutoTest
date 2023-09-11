@@ -5,46 +5,62 @@
 @Date : 2022/4/2 14:17
 """
 
-import pytest,os,sys
+import pytest,os,sys,allure,datetime
 import random
-# # 没有用到先注释，后续只加会用到的，确保该模块正常且174服务器的环境已安装
-# # 具体先conda deactivate,再pip3/pip list -v @雪琴
-# import allure
-# from selenium import webdriver
-# from selenium.webdriver.common.by import By
-# from time import sleep
-# import requests
-# import base64
-# import hashlib
-#sys.path.insert(0, r'/home/aitest/dora/')
-from testcase import test_digital_human
-from conf.read_yaml import ReadElemet
-# 将控制台输出存入日志文件
-from conf import pytest_log
-logger = pytest_log.log_test
-# 读取配置数据
-data_yaml = ReadElemet(fileName='data')
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from time import sleep
+import requests
+import base64
+import hashlib
 PROJ_ROOT = os.path.dirname(os.path.abspath(__file__))
+PROJ_PARENT_ROOT = os.path.abspath(os.path.dirname(PROJ_ROOT))
+parentdir = os.path.dirname(PROJ_ROOT)
+sys.path.insert(0, parentdir)
 
-def run_case(digital_server, output, testcasescope):
-    # 将最新的digital_server写入配置文件
-    os.chdir(PROJ_ROOT)
-    if not os.path.exists(os.path.join(PROJ_ROOT, 'results')):
-        os.mkdir(os.path.join(PROJ_ROOT, 'results'))
-        
-    data_yaml.update_yaml(k='digital_server',v=digital_server)
-    yaml = data_yaml.All_element()
-    # todo 雪琴 这个模块我对参数的传入不太懂，按目前的理解发现限制很多，果断注释。pytest如果你需要使用，则一定要熟悉pytest的各种使用方法 --成记
-    digital_human_instance = test_digital_human.Test_DigitalHuman()
-    digital_human_instance.setup_class(yaml)
-    if testcasescope == 'CI':
-        digital_human_instance.test_great_change_serial_create(yaml['short_video'], yaml['short_video'], yaml['default_audio'], output)
-    elif testcasescope == 'P1':
-        digital_human_instance.test_create_model(yaml['default_video'], yaml['high_quality'], output)
-        digital_human_instance.test_create_inference(yaml['default_video'], output)
-        digital_human_instance.test_create_video(yaml['default_model'], yaml['default_inference'], yaml['default_audio'], output)
-    
-    digital_human_instance.teardown_method()    
-    # pytest.main(['./test_digital_human.py::Test_DigitalHuman::test_great_change_serial_create','-sv'], f'--output={output}') # test_great_change_serial_create
+# 将控制台输出存入日志文件
+from conf.pytest_log import Logger
+Logger = Logger()
+logger = Logger.loggering('test_digital_human')
+# 读取配置数据
+from conf.deal_excel import DealExcel
+
+def run_case(digital_server, output, case_scope,jinkins_num=''):
+    # 将digital_server, output写入配置文件
+    excel_params = DealExcel(sheet_name ='params')
+    excel_params.update_excel(case_name='digital_server',data=digital_server)
+    excel_params.update_excel(case_name='output',data=output)
+    excel_params.update_excel(case_name='jinkins_num',data=str(jinkins_num))
+
+    # 将测试时间、测试范围case_scope记录在配置文件
+    test_time = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f")
+    excel_params.update_excel(case_name='test_time',data=test_time)
+    excel_params.update_excel(case_name='case_scope',data=case_scope)
+    case_path = os.path.join(PROJ_PARENT_ROOT,"testcase","test_digital_human.py")  # 终端输出日志
+
+    if case_scope == 'SMOKE_CASES':
+        logger.info('run smoke testcase')
+        print('run smoke testcase')
+        pytest.main([f'{case_path}::Test_DigitalHuman','-m smoke','-sv'])
+    elif case_scope == 'API_CASES':
+        logger.info('run API testcase')
+        pytest.main([f'{case_path}::Test_DigitalHuman','-m API','-sv']) 
+    elif case_scope == 'ALL_CASES':
+        logger.info('run ALL testcases')
+        pytest.main([f'{case_path}::Test_DigitalHuman','-sv']) 
+    else:
+        logger.warning(f'{case_scope} out of case range')
     logger.info('everything is done')
-    
+
+if __name__ == '__main__':
+    digital_server = 'digital_server-v1.6.0.142-202309080839-feature-69cf6c0f-2023-09-08-21-47'
+    #digital_server = 'test'
+    output = f'{os.path.sep}home{os.path.sep}aitest{os.path.sep}dora'
+    case_scope = 'SMOKE_CASES'
+    jinkins_num = 123
+    run_case(digital_server,output,case_scope,jinkins_num)
+    excel_params = DealExcel(sheet_name ='params')
+    server = excel_params.get_data(case_name='digital_server',params_name='digital_server')
+    print(f'server: {server}')
+    output = excel_params.get_data(case_name='output',params_name='output')
+    print(f'output: {output}')
