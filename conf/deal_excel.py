@@ -24,7 +24,7 @@ logger = Logger.loggering('test_digital_human')
 class DealExcel:
     def __init__(self,sheet_name):
         self.excel_path = os.path.join(PROJ_PARENT_ROOT, "conf", "test_data.xlsx")
-        logger.info(f'excel_path: {self.excel_path}')
+        print(f'excel_path: {self.excel_path}')
         self.sheet_name = sheet_name
         # 获取工作薄
         self.workbook = load_workbook(self.excel_path)
@@ -44,11 +44,11 @@ class DealExcel:
             if matches:
                 for match in matches:
                     tuple_result = tuple(match.strip('(').strip(')').split(','))
-                    # logger.info(f'tuple_result: {tuple_result}')
+                    # print(f'tuple_result: {tuple_result}')
                     # data in params.xlsx: (a,b,c),(e,f,g)
                     # return data: [('a','b','c'),('e','f','g')],input data to script by group
                     list_data.append(tuple_result)
-                    # logger.info("The contents in parentheses:", match)
+                    # print("The contents in parentheses:", match)
                     return_data = list_data
             elif "," in str(cell_value):
                 # data in params.xlsx: a,b,c
@@ -57,7 +57,7 @@ class DealExcel:
             else:
                 return_data = cell_value
                 #return_data.append(cell_value)
-        #logger.info(f'return_data: {return_data}, {type(return_data)}')
+        #print(f'return_data: {return_data}, {type(return_data)}')
         return return_data
 
     def get_right_cells(self, cell, n):
@@ -66,7 +66,7 @@ class DealExcel:
         row = cell.row
         right_column = column + n
         right_cell = self.sheet.cell(row=row, column=right_column)
-        #logger.info(f'right_cell: {right_cell}')
+        #print(f'right_cell: {right_cell}')
         return right_cell
 
     def get_position(self, cell_data):
@@ -83,7 +83,7 @@ class DealExcel:
                 if value == cell_data:
                     # 获取单元格的位置
                     cell_position = self.sheet.cell(row=row_index, column=column_index).coordinate
-                    #logger.info(f'cell_position: {cell_position}')
+                    #print(f'cell_position: {cell_position}')
                     break
         return cell_position
 

@@ -58,24 +58,24 @@ class BaseCase:
             for video in video_name:
                 video_full_path += 'test'+ os.path.sep + video_path +os.path.sep +video +','
             video_full_path = video_full_path.strip(',')
-            logger.info(f'video_name: {video_full_path}')
+            print(f'video_name: {video_full_path}')
 
         result_json = f"{create_model_log}.json"
         cmd_log_path = os.path.join(PROJ_PARENT_ROOT,"run_logs",f"{create_model_log}.log")  # 终端输出日志
-        logger.info(f'cmd_log_path:{cmd_log_path}\n')
+        print(f'cmd_log_path:{cmd_log_path}\n')
         cmd = f"echo 'zegoai@test' | sudo -S docker exec -i {self.digital_server} .{os.path.sep}dist{os.path.sep}run{os.path.sep}run --action create_model_from_video --video_path {video_full_path} --data_root {os.path.sep}data --profile {quality} --output_file sys_logs{os.path.sep}{result_json} --log_file sys_logs{os.path.sep}{create_model_log}.log --debug > {cmd_log_path} 2>&1"
-        #logger.info(f"create_model command:{cmd}\n")
+        #print(f"create_model command:{cmd}\n")
 
         with ProcessPoolExecutor(max_workers=2) as executor:
             feature = executor.submit(process_execute.execute_command, cmd)
             use_time = feature.result()
 
         json_path = f'{os.path.sep}data{os.path.sep}digital_datas{os.path.sep}sys_logs{os.path.sep}{result_json}'
-        logger.info(f'result_json_path:{json_path}')
+        print(f'result_json_path:{json_path}')
         model_json = {"action": "create_model_from_video"}
         if os.path.exists(json_path):
             log_cmd = f'cat {json_path}'
-            logger.info(f'model_result:{os.popen(log_cmd).read()}')
+            print(f'model_result:{os.popen(log_cmd).read()}')
             result_json = os.popen(log_cmd).read()
             result_dict = json.loads(result_json)  # 将json内容转为字典
             code = result_dict['code']
@@ -90,7 +90,7 @@ class BaseCase:
                 model_json["use_time"] = round(use_time, 3)
                 model_json["ai_temp"] = result_dict['data']['model_id']
                 model_json["create_model_log"] = create_model_log
-                logger.info(f'model_name: {model_json["output"]}')
+                print(f'model_name: {model_json["output"]}')
             else:
                 logger.error('create_model fail')
                 msg = result_dict['message']
@@ -100,7 +100,7 @@ class BaseCase:
                 model_json["command_log_path"] = cmd_log_path
                 model_json["create_model_log"] = create_model_log
                 logger.error('error code:{},msg:{}'.format(code, msg))
-                logger.info(f'original_video: {video_name}')
+                print(f'original_video: {video_name}')
 
         elif os.path.exists(cmd_log_path):
             # 当前时间 - 终端输出日志最新修改时间，若超过1分钟未修改，视为已经停止推理视频
@@ -110,19 +110,19 @@ class BaseCase:
                 model_json["message"] = "Fail,no result_json"
                 model_json["output"] = "null"
                 model_json["command_log_path"] = cmd_log_path
-                logger.info(f'create_mode fail,cmd log:{cmd_log_path}')
+                print(f'create_mode fail,cmd log:{cmd_log_path}')
             else:
                 model_json["code"] = -2
                 model_json["message"] = "Fail,no cmd log"
                 model_json["output"] = "null"
                 model_json["command_log_path"] = "null"
-                logger.info('create_mode Fail,no cmd log')
+                print('create_mode Fail,no cmd log')
         return model_json
 
     def create_inference_package(self, video_name,label_config_base64,video_path='1_test_clip_video'):
         # label_config_base64是否带插帧包，value格式: --label_config_base64 ewogICJmcmFtZXMiOiBbCiAgICAiMDA6MDA6MDA6NCIsCiAgICAiMDA6MDA6MDE6MTAiLAogICAgIjAwOjAwOjI6MTYiLAogICAgIjAwOjAwOjU6MTgiLAogICAgIjAwOjAwOjMwOjEwIiwKICAgICIwMDowMDo1MjoxMCIsCiAgICAiMDA6MDA6NTY6OSIKICBdLAogICJhY3Rpb24iOiBbCiAgICB7CiAgICAgICJuYW1lIjogImhlc2h1aSIsCiAgICAgICJzdGFydF90aW1lIjogIjAwOjAwOjAwOjAwIiwKICAgICAgImVuZF90aW1lIjogIjAwOjAwOjEwOjAwIgogICAgfSwKICAgIHsKICAgICAgIm5hbWUiOiAieHgiLAogICAgICAic3RhcnRfdGltZSI6ICIwMDowMDoxMDowMCIsCiAgICAgICJlbmRfdGltZSI6ICIwMDowMDoyMDowMCIKICAgIH0KICBdCn0K 
         start_time = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-        logger.info(f'开始时间:{start_time}')
+        print(f'开始时间:{start_time}')
         video_full_path = 'test' + os.path.sep + video_path + os.path.sep + video_name
         create_inference_log = 'create_inference_package_' +video_name.split('.')[0]+'_'+start_time
         result_json = f"{create_inference_log}.json"
@@ -136,11 +136,11 @@ class BaseCase:
             use_time = feature.result()
 
         json_path = f'{os.path.sep}data{os.path.sep}digital_datas{os.path.sep}sys_logs{os.path.sep}{result_json}'
-        logger.info(f'result_json_path:{json_path}')
+        print(f'result_json_path:{json_path}')
         inference_json = {"action": "create_inference_package"}
         if os.path.exists(json_path):
             json_cmd = f'cat {json_path}'
-            logger.info(f'inference_result: {os.popen(json_cmd).read()}')
+            print(f'inference_result: {os.popen(json_cmd).read()}')
             result_json = os.popen(json_cmd).read()
             result_dict = json.loads(result_json)  # 将json内容转为字典
             code = result_dict['code']
@@ -151,7 +151,7 @@ class BaseCase:
                 inference_json["original_video"] = video_name
                 inference_json["use_time"] = round(use_time, 3)
                 inference_json["create_inference_log"] = create_inference_log
-                logger.info(f'inference_name: {inference_json["output"]}')
+                print(f'inference_name: {inference_json["output"]}')
                 if label_config_base64:
                     inference_json["interpolation_name"] = result_dict['data']['interpolation_path']
 
@@ -164,7 +164,7 @@ class BaseCase:
                 inference_json["result_json"] = json_path
                 inference_json["command_log_path"] = cmd_log_path
                 logger.error('error code:{},msg:{}'.format(code, msg))
-                logger.info(f'original_video_to_inference: {video_name}')
+                print(f'original_video_to_inference: {video_name}')
 
         elif os.path.exists(cmd_log_path):
             # 当前时间 - 终端输出日志最新修改时间，若超过1分钟未修改，视为已经停止推理视频
@@ -195,18 +195,18 @@ class BaseCase:
 
         result_json = f"{create_video_log}.json"
         cmd_log_path = os.path.join(PROJ_PARENT_ROOT,"run_logs",f"{create_video_log}.log")  # 终端输出日志
-        logger.info(f'cmd_log_path:{cmd_log_path}\n')
-        cmd = f"echo 'zegoai@test' | sudo -S docker exec -i {self.digital_server} .{os.path.sep}dist{os.path.sep}run{os.path.sep}run --action create_video_from_audio --model_path models{os.path.sep}{model_name} --inference_package_path inference_packages{os.path.sep}{inference_name} --data_root {os.path.sep}data --log_file sys_logs{os.path.sep}{create_video_log}.log --output_file sys_logs{os.path.sep}{result_json} --audio_path {audio_full_path} --audio_language 'zh-CN' --use_pretrain_model {is_pretrain} > {cmd_log_path}"        #logger.info(f"create_model command:{cmd}\n")
+        print(f'cmd_log_path:{cmd_log_path}\n')
+        cmd = f"echo 'zegoai@test' | sudo -S docker exec -i {self.digital_server} .{os.path.sep}dist{os.path.sep}run{os.path.sep}run --action create_video_from_audio --model_path models{os.path.sep}{model_name} --inference_package_path inference_packages{os.path.sep}{inference_name} --data_root {os.path.sep}data --log_file sys_logs{os.path.sep}{create_video_log}.log --output_file sys_logs{os.path.sep}{result_json} --audio_path {audio_full_path} --audio_language 'zh-CN' --use_pretrain_model {is_pretrain} > {cmd_log_path}"        #print(f"create_model command:{cmd}\n")
         with ProcessPoolExecutor(max_workers=5) as executor:
             feature = executor.submit(process_execute.execute_command, cmd)
             use_time = feature.result()
 
         json_path = f'{os.path.sep}data{os.path.sep}digital_datas{os.path.sep}sys_logs{os.path.sep}{result_json}'
-        logger.info(f'result_json_path:{json_path}')
+        print(f'result_json_path:{json_path}')
         video_json = {"action": "create_video_from_audio"}
         if os.path.exists(json_path):
             log_cmd = f'cat {json_path}'
-            logger.info(f'video_result:{os.popen(log_cmd).read()}')
+            print(f'video_result:{os.popen(log_cmd).read()}')
             result_json = os.popen(log_cmd).read()
             result_dict = json.loads(result_json)  # 将json内容转为字典
             code = result_dict['code']
@@ -220,7 +220,7 @@ class BaseCase:
                 video_json["original_audio"] = audio_path
                 video_json["use_time"] = round(use_time, 3)
                 video_json["create_video_log"] = create_video_log
-                logger.info(f'video_name: {video_json["output"]}')
+                print(f'video_name: {video_json["output"]}')
             else:
                 logger.error('create_video fail')
                 msg = result_dict['message']
@@ -230,7 +230,7 @@ class BaseCase:
                 video_json["command_log_path"] = cmd_log_path
                 video_json["create_video_log"] = create_video_log
                 logger.error('error code:{},msg:{}'.format(code, msg))
-                logger.info(f'original_audio: {audio_name}')
+                print(f'original_audio: {audio_name}')
 
         elif os.path.exists(cmd_log_path):
             # 当前时间 - 终端输出日志最新修改时间，若超过1分钟未修改，视为已经停止推理视频
@@ -240,13 +240,13 @@ class BaseCase:
                 video_json["message"] = "Fail,no result_json"
                 video_json["output"] = "null"
                 video_json["command_log_path"] = cmd_log_path
-                logger.info(f'create_video fail,cmd log:{cmd_log_path}')
+                print(f'create_video fail,cmd log:{cmd_log_path}')
             else:
                 video_json["code"] = -2
                 video_json["message"] = "Fail,no cmd log"
                 video_json["output"] = "null"
                 video_json["command_log_path"] = "null"
-                logger.info('create_video Fail,no cmd log')
+                print('create_video Fail,no cmd log')
         return video_json
     
 
@@ -296,7 +296,7 @@ class BaseCase:
             self.result["test_report"]["fail_cases"].append(case_name)
             
         self.result["detail"][case_name] = result_models
-        logger.info(f'\nresult_models:{result_models["model_dict"]}\n')
+        print(f'\nresult_models:{result_models["model_dict"]}\n')
         return result_models
     
     def case_create_inference(self, case_name,inference_work=1):
@@ -345,7 +345,7 @@ class BaseCase:
             self.result["test_report"]["fail_cases"].append(case_name)
             
         self.result["detail"][case_name] = result_inferences
-        logger.info(f'\nresult_inferences:{result_inferences["inference_dict"]}\n')
+        print(f'\nresult_inferences:{result_inferences["inference_dict"]}\n')
         return result_inferences
 
 
@@ -395,7 +395,7 @@ class BaseCase:
             self.result["test_report"]["fail_cases"].append(case_name)
             
         self.result["detail"][case_name] = result_videos
-        logger.info(f'\nresult_video_list:{result_video_list}\n')
+        print(f'\nresult_video_list:{result_video_list}\n')
         return result_videos
     
     def assert_case(self,case_name,action,work):
@@ -405,7 +405,7 @@ class BaseCase:
             self.result["test_report"]["pass_nums"] = self.result["test_report"]["pass_nums"] + 1
             record_case = f'{case_name}_PASSED_before'
             self.result["test_report"]["pass_cases"].append(record_case)
-            logger.info(f'{case_name} has PASSED before')
+            print(f'{case_name} has PASSED before')
             pass
         else:
             try:
