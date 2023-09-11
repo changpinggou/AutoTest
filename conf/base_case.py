@@ -29,7 +29,7 @@ PROJ_PARENT_ROOT = os.path.abspath(os.path.dirname(PROJ_ROOT))
 sys.path.insert(0, PROJ_PARENT_ROOT)
 
 from tools import process_execute
-from conf.read_yaml import ReadElemet
+# from conf.read_yaml import ReadElemet
 # DealExcel.get_data() 读excel数据，DealExcel.update_excel()更新excel数据
 from conf.deal_excel import DealExcel
 # 将控制台输出存入日志文件
@@ -37,8 +37,8 @@ from conf.pytest_log import Logger
 logger = Logger().loggering('test_digital_human_0910')
 
 # 读取配置数据
-data_yaml = ReadElemet(fileName='data')
-yaml = data_yaml.All_element()
+# data_yaml = ReadElemet(fileName='data')
+# yaml = data_yaml.All_element()
 excel = DealExcel(sheet_name='ALL_CASES')
 
 class BaseCase:

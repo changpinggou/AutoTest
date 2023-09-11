@@ -1,1 +1,1 @@
-[{"action": "test_report", "create_time": "2023-08-29-17-48-39-756648", "PASS_nums": 0, "PASS_cases": [], "result_model_list": [], "result_inference_list": [], "result_video_list": [], "Fail_nums": 0, "Fail_cases": []}]
+{"test_report": {"create_time": "2023-09-11-22-20-03-144928", "pass_nums": 0, "pass_cases": [], "result_model_list": [], "result_inference_list": [], "result_video_list": [], "fail_nums": 0, "fail_cases": []}, "detail": {}}

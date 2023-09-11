@@ -29,7 +29,6 @@ PROJ_PARENT_ROOT = os.path.abspath(os.path.dirname(PROJ_ROOT))
 sys.path.insert(0, PROJ_PARENT_ROOT)
 
 from tools import process_execute
-from conf.read_yaml import ReadElemet
 # DealExcel.get_data() 读excel数据，DealExcel.update_excel()更新excel数据
 from conf.deal_excel import DealExcel
 # 读取配置数据

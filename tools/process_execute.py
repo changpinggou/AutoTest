@@ -4,7 +4,7 @@ import json
 import subprocess
 from conf import pytest_log
 
-logger = pytest_log.log_test
+# logger = pytest_log.log_test
 def execute_command(command):
     process = subprocess.Popen(command,
                                shell = True,
@@ -14,7 +14,7 @@ def execute_command(command):
     
     start_time = time.time()
     print(str(command))
-    logger.info(f'begin run command:{start_time}\n')
+    print(f'begin run command:{start_time}\n')
 
     process_pid = process.pid
     with open('/home/aitest/dora/conf/pid.txt', 'w', encoding='utf-8') as file:
@@ -25,24 +25,21 @@ def execute_command(command):
     if exit_code == 0:
         try:
             print(str(output.decode()))
-            logger.info(output.decode())
+            print(output.decode())
         except UnicodeDecodeError:
             print(str(output.decode('gbk')))
-            logger.info(output.decode('gbk'))  # 防备windows出现编码问题
+            print(output.decode('gbk'))  # 防备windows出现编码问题
     else:
         print(str(output.decode()))
         print(str(f"cmd error:{command}"))
-        logger.info(output.decode())
-        logger.info(f"cmd error:{command}")
         try:
             print(errors.decode())
-            logger.info(errors.decode())
         except UnicodeDecodeError:
-            logger.info(errors.decode('gbk'))  # 防备windows出现编码问题
+            print(errors.decode('gbk'))  # 防备windows出现编码问题
 
     use_time = time.time() - start_time
     print('over sync command, total: ' + str(use_time))
-    logger.info(f'total(s):{use_time}')
+    print(f'total(s):{use_time}')
 
     return use_time
     
