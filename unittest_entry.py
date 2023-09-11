@@ -23,7 +23,7 @@ def __parse_args(args):
     parser.add_argument('--runtype', type=str, default='', help='')
     parser.add_argument('--outtempdir', type=str, default='', help='临时输出目录')
     parser.add_argument('--testcasescope', type=str, default='CI', help='测试用例范畴')
-    parser.add_argument('--buildnumber', type=int, help='jenkins任务序号')
+    parser.add_argument('--buildnumber', type=str, help='jenkins任务序号')
     parser.add_argument('--outputpath', type=str, default='', help='输出路径')
 
     return parser.parse_args(args)
