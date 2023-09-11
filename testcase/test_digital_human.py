@@ -46,18 +46,18 @@ from conf.base_case import BaseCase
 
 class Test_DigitalHuman:
     def setup_class(self):
-        logger.info('~~~~~~start running~~~~~~start running~~~~~~start running~~~~~~')
+        print('~~~~~~start running~~~~~~start running~~~~~~start running~~~~~~')
         now = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f")
-        logger.info(f'now_time:{now}')
+        print(f'now_time:{str(now)}')
         self.start_time = time.time()
         excel_params = DealExcel(sheet_name = 'params')
         self.digital_server = excel_params.get_data(case_name='digital_server',params_name='digital_server')
         print(f'digital_server: {self.digital_server}')
         
         self.sys_log_path = excel_params.get_data(case_name='sys_log_path',params_name='sys_log_path')
-        logger.info(f'{self.digital_server}\n')
+        print(f'{self.digital_server}\n')
         self.output = excel_params.get_data(case_name='output',params_name='output')
-        logger.info(f'output: {self.output}')
+        print(f'output: {self.output}')
         self.jinkins_num = excel_params.get_data(case_name='jinkins_num',params_name='jinkins_num')
         self.result = {
             # 测试结果总结放在第0位置
@@ -91,30 +91,30 @@ class Test_DigitalHuman:
         # with open('/home/aitest/dora/results/result_perftest.json','a+') as f:
         with open(json_path, 'w') as f:
             f.write(json.dumps(self.result))
-        logger.info(f'test_report:{type(self.result)},{self.result}')
+        print(f'test_report:{type(self.result)},{self.result}')
 
     def teardown_class(self):
         self.all_case_use_time = time.time() - self.start_time
-        logger.info(f'run all cases use_time:{self.all_case_use_time}')
+        print(f'run all cases use_time:{self.all_case_use_time}')
         os.chdir(PROJ_ROOT)
         if not os.path.exists(os.path.join(PROJ_ROOT, 'results')):
             os.mkdir(os.path.join(PROJ_ROOT, 'results'))
             os.chmod('results', stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
         json_path = os.path.join(PROJ_PARENT_ROOT, "results", "result.json")
-        logger.info('~~~~~~done~~~~~~done~~~~~~done~~~~~~done~~~~~~done~~~~~~done~~~~~~')
+        print('~~~~~~done~~~~~~done~~~~~~done~~~~~~done~~~~~~done~~~~~~done~~~~~~')
     
 
     @pytest.mark.smoke
     def test_great_change_create_model_inference_video(self):
         case_name = 'test_great_change_create_model_inference_video'
-        logger.info(f'running {case_name}')
+        print(f'running {case_name}')
         state = excel.get_data(case_name=case_name,params_name='test_result')
         if state =='PASS':
             # 若用例已测试通过，则跳过执行
             self.result["test_report"]["pass_nums"] = self.result["test_report"]["pass_nums"] + 1
             record_case = f'{case_name}_PASSED_before'
             self.result["test_report"]["pass_cases"].append(record_case)
-            logger.info(f'{case_name} has PASSED before')
+            print(f'{case_name} has PASSED before')
             pass
         else:
             result_great_change = {
@@ -182,9 +182,10 @@ class Test_DigitalHuman:
                 self.result["test_report"]["result_video_list"].append(video_json["output"])
                 excel.update_excel(case_name=case_name,params_name='result_video',data=str(video_json["output"]))
                 excel.update_excel(case_name=case_name, params_name='test_result',data='PASS')
-                logger.info(f'test_great_change_model_inference_to_video PASS')
+                print(f'test_great_change_model_inference_to_video PASS')
             except AssertionError as e:
                 logger.error(e)
+                print(str(e))
                 result_great_change["fail_action"].append("create_video_from_audio")
                 result_great_change["code"] = -5
                 result_great_change["message"] = 'Fail at create_video'
@@ -196,14 +197,14 @@ class Test_DigitalHuman:
             finally:
                 result_great_change["create_model"] = video_json
                 self.result["detail"][case_name] = result_great_change
-                logger.info(f'result_product for test_great_change_create_model_inference_video:{result_great_change}\n')
+                print(f'result_product for test_great_change_create_model_inference_video:{result_great_change}\n')
 
 
     @pytest.mark.P0
     @pytest.mark.API
     def test_create_model(self):
         case_name = 'test_create_model'
-        logger.info(f'running {case_name}')
+        print(f'running {case_name}')
         self.base_case.assert_case(case_name=case_name,action='create_model',work=self.model_work)
 
     
@@ -211,25 +212,25 @@ class Test_DigitalHuman:
     @pytest.mark.API
     def test_create_inference(self):
         case_name = 'test_create_inference'
-        logger.info(f'running {case_name}')
+        print(f'running {case_name}')
         self.base_case.assert_case(case_name=case_name,action='create_inference',work=self.inference_work)
     
     @pytest.mark.P0
     @pytest.mark.API
     def test_create_inference_interpolation(self):
         case_name = 'test_create_inference_interpolation'
-        logger.info(f'running {case_name}')
+        print(f'running {case_name}')
         self.base_case.assert_case(case_name=case_name,action='create_inference',work=self.inference_work)
     
     @pytest.mark.P0
     @pytest.mark.API
     def test_create_video(self):
         case_name = 'test_create_video'
-        logger.info(f'running {case_name}')
+        print(f'running {case_name}')
         self.base_case.assert_case(case_name=case_name,action='create_video',work=self.video_work)
 
 
 if __name__ == '__main__':
-    logger.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~当前运行~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~当前运行~~~~~~~~~~~~~~~~~~~~~~~~~~~")
     pytest.main(['/home/aitest/dora/testcase/test_digital_human.py::Test_DigitalHuman::test_great_change_create_model_inference_video','-sv']) 
-    logger.info('everything is good')
+    print('everything is good')
