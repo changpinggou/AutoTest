@@ -35,8 +35,8 @@ def run_linux_interface(args):
         os.mkdir(args.outputpath)
     
     #interface main function   
-    run_case.run_case(docker_container_id, args.outputpath, args.testcasescope)
-    # run_case.run_case(docker_container_id, args.outputpath, args.testcasescope, args.buildnumber)
+    # run_case.run_case(docker_container_id, args.outputpath, args.testcasescope)
+    run_case.run_case(docker_container_id, args.outputpath, args.testcasescope, args.buildnumber)
 
     docker_controller.del_docker(docker_container_id)
     
