@@ -116,7 +116,7 @@ class Test_DigitalHuman:
                 "action": "test_great_change_create_model_inference_video",
                 "pass_action": [],
                 "fail_action": []
-                }
+            }
             quality = excel.get_data(case_name=case_name,params_name='quality')
             video_path_to_model = excel.get_data(case_name=case_name,params_name='video_path_to_model')
             video_to_model = excel.get_data(case_name=case_name,params_name='video_to_model')
@@ -193,7 +193,7 @@ class Test_DigitalHuman:
                 result_great_change["create_model"] = video_json
                 self.result["detail"][case_name] = result_great_change
                 print(f'result_product for test_great_change_create_model_inference_video:{result_great_change}\n')
-                self.teardown_method()
+        self.teardown_method()
 
 
     @pytest.mark.P0

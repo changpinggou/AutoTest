@@ -47,6 +47,7 @@ def main(argv):
     print('\n[*] runtype={} '.format(args.runtype))
     print('\n[*] outtempdir={} '.format(args.outtempdir))
     print('\n[*] outputpath={} '.format(args.outputpath))
+    print('\n[*] buildnumber={}'.format(args.buildnumber))
     
     if args.platform == 'linux':
         print('\nrun linux interface test')

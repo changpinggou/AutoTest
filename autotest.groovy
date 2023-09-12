@@ -162,18 +162,9 @@ pipeline {
                         echo "applechang-test 该stage是用来做windows单元测试的"
                         error 'BUILD_TARGET is linux, but only Support windows test on this machine!!!'
                     }
-
-                    // 读取 package.json 文件并解析为 JSON 对象
-                    // def packageJsonPath = "${WORKSPACE}/package.json"
-                    // echo "WORKSPACE: ${WORKSPACE}"
-                    // echo "packageJsonPath: ${packageJsonPath}"
-                    // def packageJsonObj = readJSON(file: packageJsonPath)
-                    // // 获取 version 字段
-                    // def version = packageJsonObj.version
-                    // echo "Package version: ${version}"
-
+                
                     sh(script: "export LANG=en_US.utf-8")
-
+                
                     env.BUILD_VERSION = params.HOST_VERSION
                     echo "test source BUILD_VERSION: ${env.BUILD_VERSION}"
 
@@ -203,6 +194,7 @@ pipeline {
                         
                         echo "workspace: ${codePath}"
                         sh(script: "git reset --hard HEAD", returnStdout: true)
+                        sh(script: "git pull", returnStdout: true)
                         sh(script: "git checkout ${params.BRANCH}", returnStdout: true)
                         sh(script: "git pull --rebase", returnStdout: true)
                     }

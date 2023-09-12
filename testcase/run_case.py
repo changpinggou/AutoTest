@@ -26,6 +26,7 @@ logger = Logger.loggering('test_digital_human')
 from conf.deal_excel import DealExcel
 
 def run_case(digital_server, output, case_scope,jinkins_num=''):
+    print(f'run case params => digital_server={digital_server}, output={output}, case_scope={case_scope}, jenkins_num={jinkins_num}')
     # 将digital_server, output写入配置文件
     excel_params = DealExcel(sheet_name ='params')
     excel_params.update_excel(case_name='digital_server',data=digital_server)
