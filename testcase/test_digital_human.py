@@ -106,6 +106,7 @@ class Test_DigitalHuman:
     @pytest.mark.smoke
     def test_great_change_create_model_inference_video(self):
         case_name = 'test_great_change_create_model_inference_video'
+        print('test_great_change_create_model_inference_video')
         print(f'running {case_name}')
         state = excel.get_data(case_name=case_name,params_name='test_result')
         print('set state excel.get_data')
