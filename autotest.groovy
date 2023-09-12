@@ -150,6 +150,7 @@ pipeline {
         WECOM_WEBHOOK = 'https://open.feishu.cn/open-apis/bot/v2/hook/03f0abb4-679d-41a8-8036-1eb373b55b11'
         GIT_URL = "git@git.e.coding.zego.cloud:dev/digitalhuman/DigitalHumanTest.git"
         GIT_CREDENTIALS_ID = 'kiwi_builder_ssh'
+        PYTHONIOENCODING = 'utf-8'
     }
 
     stages {
@@ -170,6 +171,8 @@ pipeline {
                     // // 获取 version 字段
                     // def version = packageJsonObj.version
                     // echo "Package version: ${version}"
+
+                    sh(script: "export LANG=en_US.utf-8")
 
                     env.BUILD_VERSION = params.HOST_VERSION
                     echo "test source BUILD_VERSION: ${env.BUILD_VERSION}"
