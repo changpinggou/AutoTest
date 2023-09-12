@@ -108,6 +108,7 @@ class Test_DigitalHuman:
         case_name = 'test_great_change_create_model_inference_video'
         print(f'running {case_name}')
         state = excel.get_data(case_name=case_name,params_name='test_result')
+        print('set state excel.get_data')
         if state =='PASS':
             # 若用例已测试通过，则跳过执行
             self.result["test_report"]["pass_nums"] = self.result["test_report"]["pass_nums"] + 1
@@ -127,12 +128,15 @@ class Test_DigitalHuman:
             label_config_base64 = excel.get_data(case_name=case_name,params_name='label_config_base64')        
             video_path_to_inference = excel.get_data(case_name=case_name,params_name='video_path_to_inference')
             video_to_inference = excel.get_data(case_name=case_name,params_name='video_to_inference')
+            print('excel.get_data in else selection')
             with ThreadPoolExecutor(max_workers=2) as executor:
                 futures = []
+                print('ready to run create_model/inference')
                 future1 = executor.submit(self.base_case.create_model_from_video,video_name=video_to_model, quality=quality,video_path=video_path_to_model)
                 future2 = executor.submit(self.base_case.create_inference_package,video_name=video_to_inference, video_path=video_path_to_inference,label_config_base64=label_config_base64)
                 futures.append(future1)
                 futures.append(future2)
+                print('running')
                 result_all =[]
                 result_model_dict = {}
                 result_inference_dict = {}
@@ -140,6 +144,7 @@ class Test_DigitalHuman:
                     thread_json = future.result()
                     result_all.append(thread_json)
                     action = thread_json["action"]
+                    print('fine in ' + str(action))
                     try:
                         assert thread_json["code"] == 0
                         result_great_change["pass_action"].append(action)
