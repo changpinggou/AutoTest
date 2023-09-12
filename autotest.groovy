@@ -191,9 +191,18 @@ pipeline {
                     }
                     echo "TRIGGERED_USER: ${TRIGGERED_USER}"
 
-                    def repository = "git@github.com:changpinggou/AutoTest.git"
-                    def output = sh(script: "bash /data2/AutoTest/git_load.sh ${WORKSPACE} ${repository} ${env.BRANCH}", returnStdout: true)
-                    echo output
+                    def codePath = "${WORKSPACE}/AutoTest"
+                    if (!fileExists(codePath)) {
+                        def repository = "git@github.com:changpinggou/AutoTest.git"
+                        sh(script: "git clone ${repository}", returnStdout: true)
+                    }
+                    dir (codePath) {
+                        
+                        echo "workspace: ${codePath}"
+                        sh(script: "git reset --hard HEAD", returnStdout: true)
+                        sh(script: "git checkout ${params.BRANCH}", returnStdout: true)
+                        sh(script: "git pull --rebase", returnStdout: true)
+                    }
 
                 }
             }
@@ -220,8 +229,12 @@ pipeline {
                     args+= "--buildnumber=" + "${BUILD_NUMBER}" + " "
                     
                     echo "args:${args}"
-                    cmd = "python3 -u AutoTest/unittest_entry.py ${args}"
-                    sh(script: cmd, label: STAGE_NAME)
+                    dir ("${WORKSPACE}/AutoTest") {
+                        cmd = "python3 -u unittest_entry.py ${args}"
+                        sh(script: cmd, label: STAGE_NAME, returnStdout: true)
+                        echo "linux unittest end"
+                    }
+                    
                 }
             }
         }
