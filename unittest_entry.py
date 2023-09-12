@@ -31,11 +31,8 @@ def __parse_args(args):
 def run_linux_interface(args):
     docker_controller = docker_ctrl.DockerController()
     docker_container_id, docker_server_name = docker_controller.get_docker(args.dockername)
-    if not os.path.exists(args.outputpath):
-        os.mkdir(args.outputpath)
     
     #interface main function   
-    # run_case.run_case(docker_container_id, args.outputpath, args.testcasescope)
     run_case.run_case(docker_container_id, args.outputpath, args.testcasescope, args.buildnumber)
 
     docker_controller.del_docker(docker_container_id)

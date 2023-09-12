@@ -40,8 +40,9 @@ def run_case(digital_server, output, case_scope,jinkins_num=''):
 
     if case_scope == 'SMOKE_CASES':
         logger.info('run smoke testcase')
-        print('run smoke testcase')
+        print('run smoke testcase -- run_case.py')
         pytest.main([f'{case_path}::Test_DigitalHuman','-m smoke','-sv'])
+        print('smoke case done -- run_case.py')
     elif case_scope == 'API_CASES':
         logger.info('run API testcase')
         pytest.main([f'{case_path}::Test_DigitalHuman','-m API','-sv']) 

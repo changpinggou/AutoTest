@@ -45,7 +45,6 @@ from conf.base_case import BaseCase
 
 class Test_DigitalHuman:
     def setup_class(self):
-        # print('~~~~~~start running~~~~~~~start running~~~~~~start running~~~~~~')
         now = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f")
         print(f'now_time:{str(now)}')
         self.start_time = time.time()
@@ -58,6 +57,7 @@ class Test_DigitalHuman:
         self.output = excel_params.get_data(case_name='output',params_name='output')
         print(f'output: {self.output}')
         self.jinkins_num = excel_params.get_data(case_name='jinkins_num',params_name='jinkins_num')
+        self.sys_log_path = f'sys_logs_{self.jinkins_num}'
         self.result = {
             # 测试结果总结放在第0位置
             "test_report": {"create_time": now,
@@ -79,15 +79,12 @@ class Test_DigitalHuman:
         self.video_work = 5
 
     def teardown_method(self):
-        sys_log_path = f'sys_logs_{self.jinkins_num}'
         os.chdir(self.output)
-        if not os.path.exists(os.path.join(self.output, sys_log_path)):
-            os.mkdir(os.path.join(self.output, sys_log_path))
-            os.chmod(sys_log_path, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
+        if not os.path.exists(os.path.join(self.output, self.sys_log_path)):
+            os.mkdir(os.path.join(self.output, self.sys_log_path))
+            os.chmod(self.sys_log_path, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
             
-        json_path = os.path.join(PROJ_PARENT_ROOT, "results", "result.json")
-        #json_path = os.path.join(output, "result.json") 要把成记给的output传进来
-        # with open('/home/aitest/dora/results/result_perftest.json','a+') as f:
+        json_path = os.path.join(self.output, self.sys_log_path, "result.json")
         with open(json_path, 'w') as f:
             f.write(json.dumps(self.result))
         print(f'test_report:{type(self.result)},{self.result}')
@@ -96,20 +93,17 @@ class Test_DigitalHuman:
         self.all_case_use_time = time.time() - self.start_time
         print(f'run all cases use_time:{self.all_case_use_time}')
         os.chdir(PROJ_ROOT)
-        if not os.path.exists(os.path.join(PROJ_ROOT, 'results')):
-            os.mkdir(os.path.join(PROJ_ROOT, 'results'))
-            os.chmod('results', stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
-        json_path = os.path.join(PROJ_PARENT_ROOT, "results", "result.json")
-        # print('~~~~~~done~~~~~~done~~~~~~done~~~~~~done~~~~~~done~~~~~~done~~~~~~')
+        if not os.path.exists(os.path.join(self.output, self.sys_log_path)):
+            os.mkdir(os.path.join(self.output, self.sys_log_path))
+            os.chmod(self.sys_log_path, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
+        json_path = os.path.join(self.output, self.sys_log_path, "result.json")
     
 
     @pytest.mark.smoke
     def test_great_change_create_model_inference_video(self):
         case_name = 'test_great_change_create_model_inference_video'
-        print('test_great_change_create_model_inference_video')
         print(f'running {case_name}')
         state = excel.get_data(case_name=case_name,params_name='test_result')
-        print('set state excel.get_data')
         if state =='PASS':
             # 若用例已测试通过，则跳过执行
             self.result["test_report"]["pass_nums"] = self.result["test_report"]["pass_nums"] + 1
@@ -129,15 +123,12 @@ class Test_DigitalHuman:
             label_config_base64 = excel.get_data(case_name=case_name,params_name='label_config_base64')        
             video_path_to_inference = excel.get_data(case_name=case_name,params_name='video_path_to_inference')
             video_to_inference = excel.get_data(case_name=case_name,params_name='video_to_inference')
-            print('excel.get_data in else selection')
             with ThreadPoolExecutor(max_workers=2) as executor:
                 futures = []
-                print('ready to run create_model/inference')
                 future1 = executor.submit(self.base_case.create_model_from_video,video_name=video_to_model, quality=quality,video_path=video_path_to_model)
                 future2 = executor.submit(self.base_case.create_inference_package,video_name=video_to_inference, video_path=video_path_to_inference,label_config_base64=label_config_base64)
                 futures.append(future1)
                 futures.append(future2)
-                print('running')
                 result_all =[]
                 result_model_dict = {}
                 result_inference_dict = {}
@@ -145,7 +136,6 @@ class Test_DigitalHuman:
                     thread_json = future.result()
                     result_all.append(thread_json)
                     action = thread_json["action"]
-                    print('fine in ' + str(action))
                     try:
                         assert thread_json["code"] == 0
                         result_great_change["pass_action"].append(action)
@@ -203,6 +193,7 @@ class Test_DigitalHuman:
                 result_great_change["create_model"] = video_json
                 self.result["detail"][case_name] = result_great_change
                 print(f'result_product for test_great_change_create_model_inference_video:{result_great_change}\n')
+                self.teardown_method()
 
 
     @pytest.mark.P0
