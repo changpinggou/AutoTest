@@ -125,7 +125,7 @@ class BaseCase:
     def create_inference_package(self, video_name,label_config_base64,video_path='1_test_clip_video'):
         # label_config_base64是否带插帧包，value格式: --label_config_base64 ewogICJmcmFtZXMiOiBbCiAgICAiMDA6MDA6MDA6NCIsCiAgICAiMDA6MDA6MDE6MTAiLAogICAgIjAwOjAwOjI6MTYiLAogICAgIjAwOjAwOjU6MTgiLAogICAgIjAwOjAwOjMwOjEwIiwKICAgICIwMDowMDo1MjoxMCIsCiAgICAiMDA6MDA6NTY6OSIKICBdLAogICJhY3Rpb24iOiBbCiAgICB7CiAgICAgICJuYW1lIjogImhlc2h1aSIsCiAgICAgICJzdGFydF90aW1lIjogIjAwOjAwOjAwOjAwIiwKICAgICAgImVuZF90aW1lIjogIjAwOjAwOjEwOjAwIgogICAgfSwKICAgIHsKICAgICAgIm5hbWUiOiAieHgiLAogICAgICAic3RhcnRfdGltZSI6ICIwMDowMDoxMDowMCIsCiAgICAgICJlbmRfdGltZSI6ICIwMDowMDoyMDowMCIKICAgIH0KICBdCn0K 
         start_time = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-        print(f'开始时间:{start_time}')
+        print(f'begin:{start_time}')
         video_full_path = 'test' + os.path.sep + video_path + os.path.sep + video_name
         create_inference_log = 'create_inference_package_' +video_name.split('.')[0]+'_'+start_time
         result_json = f"{create_inference_log}.json"
