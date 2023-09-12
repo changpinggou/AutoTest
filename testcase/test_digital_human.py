@@ -45,7 +45,7 @@ from conf.base_case import BaseCase
 
 class Test_DigitalHuman:
     def setup_class(self):
-        print('~~~~~~start running~~~~~~start running~~~~~~start running~~~~~~')
+        # print('~~~~~~start running~~~~~~~start running~~~~~~start running~~~~~~')
         now = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f")
         print(f'now_time:{str(now)}')
         self.start_time = time.time()
@@ -100,7 +100,7 @@ class Test_DigitalHuman:
             os.mkdir(os.path.join(PROJ_ROOT, 'results'))
             os.chmod('results', stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
         json_path = os.path.join(PROJ_PARENT_ROOT, "results", "result.json")
-        print('~~~~~~done~~~~~~done~~~~~~done~~~~~~done~~~~~~done~~~~~~done~~~~~~')
+        # print('~~~~~~done~~~~~~done~~~~~~done~~~~~~done~~~~~~done~~~~~~done~~~~~~')
     
 
     @pytest.mark.smoke

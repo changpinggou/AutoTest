@@ -57,7 +57,7 @@ if __name__ == '__main__':
     #digital_server = 'test'
     output = f'{os.path.sep}home{os.path.sep}aitest{os.path.sep}dora'
     case_scope = 'SMOKE_CASES'
-    jinkins_num = 123
+    jinkins_num = '123'
     run_case(digital_server,output,case_scope,jinkins_num)
     excel_params = DealExcel(sheet_name ='params')
     server = excel_params.get_data(case_name='digital_server',params_name='digital_server')
