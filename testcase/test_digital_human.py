@@ -236,6 +236,6 @@ class Test_DigitalHuman:
 
 
 if __name__ == '__main__':
-    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~当前运行~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    # print("~~~~~~~~~~~~~~~~~~~~~~~~~~~当前运行~~~~~~~~~~~~~~~~~~~~~~~~~~~")
     pytest.main(['/home/aitest/dora/testcase/test_digital_human.py::Test_DigitalHuman::test_great_change_create_model_inference_video','-sv']) 
     print('everything is good')
