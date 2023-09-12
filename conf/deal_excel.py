@@ -91,8 +91,9 @@ class DealExcel:
         # 获取case_name所在单元格
         cell_position = self.get_position(case_name)
         if not cell_position:
-            logger.warning(f"the {case_name} is not in the sheet")
+            print(f"the {case_name} is not in the sheet")
         else:
+            print('cell position')
             cell = self.sheet[cell_position]
             #print(f'cell_value: {cell.value}')
             # 获取用例测试数据
@@ -123,6 +124,8 @@ class DealExcel:
             elif params_name == 'result_video':
                 return self.set_data_format(self.get_right_cells(cell, 13).value)
             elif params_name == 'test_result':
+                print('this_params_name: ' + 'test_result')
+                print(str(self.get_right_cells(cell, 14).value))
                 return self.set_data_format(self.get_right_cells(cell, 14).value)
             # 获取传入的变量的值，digital_server，output那些
             elif params_name in ['digital_server','output']:
