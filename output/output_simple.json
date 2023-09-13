@@ -1,0 +1,21 @@
+{
+    "create_time" : "2023-09-13-15-23-45",
+    "case" : [
+        {
+            "case_name" : "CI",
+            "describe": "这个用例的目的描述",
+            "model_path": "/path/to/models.zip",
+            "inference_path" : "/path/to/inference.zip",
+            "audio" : "当前尚未支持，后面补充",
+            "output" : "最终效果视频完整路径"
+        },
+        {
+            "case_name" : "P1",
+            "describe": "比如预训练模型的推理",
+            "model_path": "use_pretrainted_model",
+            "inference_path": "/path/to/inference.zip",
+            "audio" : "当前尚未支持，后面补充",
+            "output" : "/path/to/video.mp4"
+        }
+    ]
+}
