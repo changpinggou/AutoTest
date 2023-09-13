@@ -126,7 +126,7 @@ pipeline {
         string(name: 'LINUX_DOCKER_NAME',defaultValue: '',  description: '被测docker名\n')
         choice(
             name: 'TEST_CASE_SCOPE',
-            choices: ['SMOKE_CASES', 'API_CASES', 'ALL_CASES'],
+            choices: ['SMOKE_CASES', 'API_CASES', 'ALL_CASES', 'VIDEO_BATCH'],
             description: '测试用例范畴\n'
         )
         // string(name: 'TEST_CASE_SCOPE',defaultValue: 'CI',  description: '测试用例范畴\n')
@@ -162,18 +162,9 @@ pipeline {
                         echo "applechang-test 该stage是用来做windows单元测试的"
                         error 'BUILD_TARGET is linux, but only Support windows test on this machine!!!'
                     }
-
-                    // 读取 package.json 文件并解析为 JSON 对象
-                    // def packageJsonPath = "${WORKSPACE}/package.json"
-                    // echo "WORKSPACE: ${WORKSPACE}"
-                    // echo "packageJsonPath: ${packageJsonPath}"
-                    // def packageJsonObj = readJSON(file: packageJsonPath)
-                    // // 获取 version 字段
-                    // def version = packageJsonObj.version
-                    // echo "Package version: ${version}"
-
+                
                     sh(script: "export LANG=en_US.utf-8")
-
+                
                     env.BUILD_VERSION = params.HOST_VERSION
                     echo "test source BUILD_VERSION: ${env.BUILD_VERSION}"
 
@@ -203,6 +194,7 @@ pipeline {
                         
                         echo "workspace: ${codePath}"
                         sh(script: "git reset --hard HEAD", returnStdout: true)
+                        sh(script: "git pull", returnStdout: true)
                         sh(script: "git checkout ${params.BRANCH}", returnStdout: true)
                         sh(script: "git pull --rebase", returnStdout: true)
                     }
@@ -235,9 +227,14 @@ pipeline {
                     dir ("${WORKSPACE}/AutoTest") {
                         cmd = "python3 -u unittest_entry.py ${args}"
                         sh(script: cmd, label: STAGE_NAME, returnStdout: true)
-                        echo "linux unittest end"
+                        
+                        newJsonArgs = "--innerjson=" + "${WORKSPACE}/sys_logs_${BUILD_NUMBER}/result.json" + " "
+                        newJsonArgs+= "--outputpath=" + "${WORKSPACE}" + " "
+                        newJsonArgs+= "--testcasescope=" + params.TEST_CASE_SCOPE + " "
+                        newJsonCmd = "python3 -u tools/inductive_json.py ${newJsonArgs}"
+                        sh(script: newJsonCmd, label: STAGE_NAME, returnStdout: true)
                     }
-                    
+                    echo "linux unittest end"
                 }
             }
         }
@@ -277,23 +274,23 @@ pipeline {
                 }else{
                     mdBody += "<br/>- <font color='grey'>产物: </font>"
                     // 获取字典中所有键的集合
-                    def keys = resultJsonObj[0].keySet()
+                    def test_report = resultJsonObj['test_report']
+                    def keys = test_report.keySet()
                     for (def key in keys) {
                         if (key == "pass_nums" || key == "fail_nums") {
                             def content = key == "pass_nums" ? "通过数量" : "失败数量"
-                            mdBody += "<br/> - ${content}: ${resultJsonObj[key]}"
+                            mdBody += "<br/> - ${content}: ${test_report[key]}"
                         }
                         else if (key == "fail_cases") {
-                            mdBody += "<br/> - 失败cases: ${resultJsonObj[key]}"
+                            mdBody += "<br/> - 失败cases: ${test_report[key]}"
                         }
                     }
-                    archiveArtifacts "${resultDir}"
 
                     //todo 第一版本先直接暂时jenkins制品库，第二版再展示allure模块的东西 --shingkee
-                    def url = "http://jenkins.zegokiwi.cn/job/DigitalHuman/job/DigitalHumanTestLinux/${BUILD_BUMBER}/artifact/"
+                    def url = "http://jenkins.zegokiwi.cn/job/DigitalHuman/job/DigitalHumanTestLinux/${BUILD_NUMBER}/artifact/"
                     mdBody += "<br/> - jenkins制品库链接: [${url}](${url})"
                 }
-
+                echo "final body content:\n ${mdBody}"
 
                 println("\n\n***PRODUCT***\n\n${resultJsonObj}\n\n")
 
@@ -307,11 +304,13 @@ pipeline {
 
                 // 归档产物信息文件到 Jenkins 制品库
                 archiveArtifacts 'products.json'
+                archiveArtifacts 'results.json'
 
                 echo "SUCCESS!!! BUILD_VERSION=${env.BUILD_VERSION}"
                 
                 if (params.SEND_NOTICE) {
                     // 发送成功通知
+                    echo "send message to outside"
                     send_wecom_notification(WECOM_WEBHOOK, true, PROJECT_NAME, TRIGGERED_USER, mdBody)
                 }
             }
