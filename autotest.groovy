@@ -269,23 +269,23 @@ pipeline {
                 }else{
                     mdBody += "<br/>- <font color='grey'>产物: </font>"
                     // 获取字典中所有键的集合
-                    def keys = resultJsonObj[0].keySet()
+                    def test_report = resultJsonObj['test_report']
+                    def keys = test_report.keySet()
                     for (def key in keys) {
                         if (key == "pass_nums" || key == "fail_nums") {
                             def content = key == "pass_nums" ? "通过数量" : "失败数量"
-                            mdBody += "<br/> - ${content}: ${resultJsonObj[key]}"
+                            mdBody += "<br/> - ${content}: ${test_report[key]}"
                         }
                         else if (key == "fail_cases") {
-                            mdBody += "<br/> - 失败cases: ${resultJsonObj[key]}"
+                            mdBody += "<br/> - 失败cases: ${test_report[key]}"
                         }
                     }
-                    archiveArtifacts "${resultDir}"
 
                     //todo 第一版本先直接暂时jenkins制品库，第二版再展示allure模块的东西 --shingkee
-                    def url = "http://jenkins.zegokiwi.cn/job/DigitalHuman/job/DigitalHumanTestLinux/${BUILD_BUMBER}/artifact/"
+                    def url = "http://jenkins.zegokiwi.cn/job/DigitalHuman/job/DigitalHumanTestLinux/${BUILD_NUMBER}/artifact/"
                     mdBody += "<br/> - jenkins制品库链接: [${url}](${url})"
                 }
-
+                echo "final body content:\n ${mdBody}"
 
                 println("\n\n***PRODUCT***\n\n${resultJsonObj}\n\n")
 
@@ -299,11 +299,16 @@ pipeline {
 
                 // 归档产物信息文件到 Jenkins 制品库
                 archiveArtifacts 'products.json'
+                dir (resultDir) {
+                    archiveArtifacts 'result.json'
+                    // *.log
+                }
 
                 echo "SUCCESS!!! BUILD_VERSION=${env.BUILD_VERSION}"
                 
                 if (params.SEND_NOTICE) {
                     // 发送成功通知
+                    echo "send message to outside"
                     send_wecom_notification(WECOM_WEBHOOK, true, PROJECT_NAME, TRIGGERED_USER, mdBody)
                 }
             }
