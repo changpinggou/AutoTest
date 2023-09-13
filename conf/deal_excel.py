@@ -128,7 +128,7 @@ class DealExcel:
                 print(str(self.get_right_cells(cell, 14).value))
                 return self.set_data_format(self.get_right_cells(cell, 14).value)
             # 获取传入的变量的值，digital_server，output那些
-            elif params_name in ['digital_server','output']:
+            elif params_name in ['digital_server', 'output', 'jinkins_num']:
                 return self.set_data_format(self.get_right_cells(cell, 1).value)
             else:
                 logger.warning(f"the {params_name} is not in the sheet")
