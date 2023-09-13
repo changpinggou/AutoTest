@@ -7,14 +7,31 @@ import argparse
 def get_args(params):
     params = params[1:]
     parser = argparse.ArgumentParser()
-    parser.add_argument('--inner_json_path',type=str, help='用例json完整路径')
-    parser.add_argument('--output', type=str, help='输出路径')
+    parser.add_argument('--innerjson',type=str, help='用例json完整路径')
+    parser.add_argument('--outputpath', type=str, help='输出路径')
+    parser.add_argument('--testcasescope', type=str, help='用例范畴')
     
     args = parser.parse_args(params)
     return args
 
 
-def make_json(output, inner_json_path):
+def make_more_video_json(output, inner_json_path):
+    json_file = open(inner_json_path)
+    content = json.load(json_file)
+    json_file.close()
+
+    map = {
+        'create_time' : content['test_report']['create_time'],
+        'case' : '',
+        'source' : {},
+        'output' : []
+    }
+    
+    #待确定格式
+        
+        
+
+def make_richer_case_json(output, inner_json_path):
     json_file = open(inner_json_path)
     content = json.load(json_file)
     json_file.close()
@@ -44,7 +61,10 @@ def make_json(output, inner_json_path):
 def main(argv):
     try:
         args = get_args(argv)
-        make_json(args.output, args.inner_json_path)
+        if args.testcasescope in ['SMOKE_CASES', 'API_CASES', 'ALL_CASES']:
+            make_richer_case_json(args.outputpath, args.innerjson)
+        elif args.testcasescope == '':
+            make_more_video_json(args.outputpath, args.innerjson)
         print('>>> inductive_json.py -> done')
     except Exception as e:
         print('>>> inductive_json.py -> error: ' + str(e))

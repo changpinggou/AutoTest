@@ -222,15 +222,14 @@ pipeline {
                     // 临时输出参数
                     args+= "--outputpath=" + "${WORKSPACE}" + " "
                     args+= "--buildnumber=" + "${BUILD_NUMBER}" + " "
+                    args+= "--innerjson=" + "${WORKSPACE}/sys_logs_${BUILD_NUMBER}/result.json" + " "
                     
                     echo "args:${args}"
                     dir ("${WORKSPACE}/AutoTest") {
                         cmd = "python3 -u unittest_entry.py ${args}"
                         sh(script: cmd, label: STAGE_NAME, returnStdout: true)
 
-                        newJsonArgs = "--inner_json_path=" + "${WORKSPACE}/sys_logs_${BUILD_NUMBER}/result.json" + " "
-                        newJsonArgs+= "--output=" + "${WORKSPACE}" + " " 
-                        newJsonCmd = "python3 -u tools/inductive_json.py ${newJsonArgs}"
+                        newJsonCmd = "python3 -u tools/inductive_json.py ${args}"
                         sh(script: newJsonCmd, label: STAGE_NAME, returnStdout: true)
                     }
                     echo "linux unittest end"
