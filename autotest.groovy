@@ -227,9 +227,13 @@ pipeline {
                     dir ("${WORKSPACE}/AutoTest") {
                         cmd = "python3 -u unittest_entry.py ${args}"
                         sh(script: cmd, label: STAGE_NAME, returnStdout: true)
-                        echo "linux unittest end"
+
+                        newJsonArgs = "--inner_json_path=" + "${WORKSPACE}/sys_logs_${BUILD_NUMBER}/result.json" + " "
+                        newJsonArgs+= "--output=" + "${WORKSPACE}" + " " 
+                        newJsonCmd = "python3 -u tools/inductive_json.py ${newJsonArgs}"
+                        sh(script: newJsonCmd, label: STAGE_NAME, returnStdout: true)
                     }
-                    
+                    echo "linux unittest end"
                 }
             }
         }
@@ -299,10 +303,7 @@ pipeline {
 
                 // 归档产物信息文件到 Jenkins 制品库
                 archiveArtifacts 'products.json'
-                dir (resultDir) {
-                    archiveArtifacts 'result.json'
-                    // *.log
-                }
+                archiveArtifacts 'results.json'
 
                 echo "SUCCESS!!! BUILD_VERSION=${env.BUILD_VERSION}"
                 
