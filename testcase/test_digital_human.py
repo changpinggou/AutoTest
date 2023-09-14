@@ -226,7 +226,7 @@ class Test_DigitalHuman:
                     except AssertionError as e:
                         logger.error(e)
                         result_great_change["fail_action"].append(action)
-                        self.result["test_report"]["fail_action"].append("test_great_change_create_model_inference_video")
+                        self.result["test_report"]["fail_cases"].append("test_great_change_create_model_inference_video")
                         self.excel.update_excel(case_name=case_name, params_name='test_result',data='FAIL')
                         if action == "create_inference_package":
                             result_great_change["create_inference_package"] = thread_json
