@@ -228,7 +228,7 @@ pipeline {
                         cmd = "python3 -u unittest_entry.py ${args}"
                         sh(script: cmd, label: STAGE_NAME, returnStdout: true)
                         
-                        newJsonArgs = "--innerjson=" + "${WORKSPACE}/sys_logs_${BUILD_NUMBER}/result.json" + " "
+                        newJsonArgs = "--innerjson=" + "${WORKSPACE}/AutoTest_${BUILD_NUMBER}/result.json" + " "
                         newJsonArgs+= "--outputpath=" + "${WORKSPACE}" + " "
                         newJsonArgs+= "--testcasescope=" + params.TEST_CASE_SCOPE + " "
                         newJsonCmd = "python3 -u tools/inductive_json.py ${newJsonArgs}"
@@ -263,7 +263,7 @@ pipeline {
         success {
             script {
                 // 读取 result.json 文件并解析为 JSON 对象
-                def resultDir = "${WORKSPACE}/sys_logs_${BUILD_NUMBER}"
+                def resultDir = "${WORKSPACE}/AutoTest_${BUILD_NUMBER}"
                 def resultJsonPath = "${resultDir}/result.json"
                 // 拼接产物信息
                 def resultJsonObj = readJSON(file: resultJsonPath)

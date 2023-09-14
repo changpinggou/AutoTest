@@ -54,9 +54,8 @@ def make_richer_case_json(output, inner_json_path):
         
         map['case'].append(case_map)
         
-    # with open(os.path.join(output, 'results.json'), 'w+') as fs:
-    #     json.dump(map, fs, indent = 4) 
-    print(map)
+    with open(os.path.join(output, 'results.json'), 'w+') as fs:
+        json.dump(map, fs, indent = 4) 
     
 
 def main(argv):
