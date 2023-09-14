@@ -20,17 +20,7 @@ def get_args(params):
 
 
 def make_more_video_json(output, inner_json_path):
-    json_file = open(inner_json_path)
-    content = json.load(json_file)
-    json_file.close()
-
-    map = {
-        'create_time' : content['test_report']['create_time'],
-        'case' : '',
-        'source' : {},
-        'output' : []
-    }
-    
+    print('待确定格式')
     #待确定格式
         
         
@@ -41,7 +31,7 @@ def make_richer_case_json(output, inner_json_path):
     json_file.close()
     
     richer_map = {
-        'create_time' : str(content['test_report']['create_time']),
+        'result' : str(content['test_report']),
         'case' : []
     }
     print('map init:' + str(richer_map))
@@ -58,10 +48,13 @@ def make_richer_case_json(output, inner_json_path):
                 case_map = {}
                 case_map['case_name'] = case_value['action']
                 case_map['describe'] = "下个版本同步"
-                # case_map['model'] = case_value['original_model']
-                # case_map['inference_packages'] = case_value['original_inference']
-                # case_map['audio'] = case_value['original_audio']
                 case_map['output'] = case_value['output']
+                if 'original_model' in case_value:
+                    case_map['model'] = case_value['original_model']
+                if 'original_inference' in case_value:
+                    case_map['inference_packages'] = case_value['original_inference']
+                if 'original_audio' in case_value:
+                    case_map['audio'] = case_value['original_audio']
 
                 richer_map['case'].append(case_map)
     print('map final: ' + str(richer_map))
@@ -72,10 +65,8 @@ def make_richer_case_json(output, inner_json_path):
 def main(argv):
     try:
         args = get_args(argv)
-        if args.testcasescope in ['SMOKE_CASES', 'API_CASES', 'ALL_CASES']:
+        if args.testcasescope in ['SMOKE_CASES', 'API_CASES', 'ALL_CASES', 'VIDEO_BATCH']:
             make_richer_case_json(args.outputpath, args.innerjson)
-        elif args.testcasescope == '':
-            make_more_video_json(args.outputpath, args.innerjson)
         print('>>> inductive_json.py -> done')
     except Exception as e:
         print('>>> inductive_json.py -> error: ' + str(e))

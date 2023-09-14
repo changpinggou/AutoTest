@@ -129,7 +129,11 @@ pipeline {
             choices: ['SMOKE_CASES', 'API_CASES', 'ALL_CASES', 'VIDEO_BATCH'],
             description: '测试用例范畴\n'
         )
-        // string(name: 'TEST_CASE_SCOPE',defaultValue: 'CI',  description: '测试用例范畴\n')
+        choice(
+            name: 'RUN_STATE',
+            choices: ['new_run', 're_run']
+            description: 'case重跑和新跑\n'
+        )
         string(name: 'BRANCH', defaultValue: 'master', description: '要构建的分支')
         string(name: 'HOST_BRANCH', defaultValue: 'master', description: '被测试的数字人分支标志')
         string(name: 'HOST_COMMITID', defaultValue: '8d7d79', description: '被测试的数字人Commit节点')
@@ -219,6 +223,7 @@ pipeline {
                     args+= "--dockername=" + params.LINUX_DOCKER_NAME + " "
                     args+= "--outtempdir=" + outTempDir + " "
                     args+= "--testcasescope=" + params.TEST_CASE_SCOPE + " "
+                    args+= "--runstate=" + params.RUN_STATE + " "
                     // 临时输出参数
                     args+= "--outputpath=" + "${WORKSPACE}" + " "
                     args+= "--buildnumber=" + "${BUILD_NUMBER}" + " "

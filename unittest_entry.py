@@ -25,6 +25,7 @@ def __parse_args(args):
     parser.add_argument('--testcasescope', type=str, default='CI', help='测试用例范畴')
     parser.add_argument('--buildnumber', type=str, help='jenkins任务序号')
     parser.add_argument('--outputpath', type=str, default='', help='输出路径')
+    parser.add_argument('--runstate', type=str, default='', help='任务重跑或新跑')
 
     return parser.parse_args(args)
 
@@ -36,7 +37,7 @@ def run_linux_interface(args):
     
     #interface main function   
     # run_case.run_case(docker_container_id, args.outputpath, args.testcasescope)
-    run_case.run_case(docker_container_id, args.outputpath, args.testcasescope, args.buildnumber)
+    run_case.run_case(docker_container_id, args.outputpath, args.testcasescope, args.buildnumber, args.runstate)
 
     docker_controller.del_docker(docker_container_id)
     
@@ -48,6 +49,7 @@ def main(argv):
     print('\n[*] digithumanstuburl={} '.format(args.digithumanstuburl))
     print('\n[*] digithumanstublocalpath={} '.format(args.digithumanstublocalpath))
     print('\n[*] runtype={} '.format(args.runtype))
+    print('\n[*] runstate={} '.format(args.runstate))
     print('\n[*] outtempdir={} '.format(args.outtempdir))
     print('\n[*] outputpath={} '.format(args.outputpath))
     
