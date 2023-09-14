@@ -133,7 +133,7 @@ class Test_DigitalHuman:
         self.all_case_use_time = time.time() - self.start_time
         logger.info(f'run all cases use_time:{self.all_case_use_time}')
         # 将/data/digital_datas/sys_logs下的系统日志和结果json传到外部的sys_logs_{jenkins_nums}下
-        self.test_log_json_path = f"/data/digital_datas/sys_logs".replace('/',os.path.sep)
+        self.test_log_json_path = f"/data/digital_datas/{self.sys_logs}".replace('/',os.path.sep)
         com_func.cp_file(file_path=self.test_log_json_path,target_path=self.AutoTest_log)
 
         logger.info(f'test_result:\n {json.dumps(self.result, indent=4)}')
