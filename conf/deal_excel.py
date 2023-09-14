@@ -8,7 +8,7 @@
 2-实现步骤：
 3-状态（废弃/使用）：
 """
-import os, sys, re
+import os, sys, re, stat
 from openpyxl import load_workbook
 
 PROJ_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -16,15 +16,16 @@ PROJ_PARENT_ROOT = os.path.abspath(os.path.dirname(PROJ_ROOT))
 parentdir = os.path.dirname(PROJ_ROOT)
 sys.path.insert(0, parentdir)
 
-# 将控制台输出存入日志文件
-from conf.pytest_log import Logger
-Logger = Logger()
-logger = Logger.loggering('test_digital_human')
+# record log
+from conf.record_log import Logger
+logger = Logger(log_path='logs',log_file='test_digital_human.log').get_log()
+
 
 class DealExcel:
-    def __init__(self,sheet_name):
-        self.excel_path = os.path.join(PROJ_PARENT_ROOT, "conf", "test_data.xlsx")
-        print(f'excel_path: {self.excel_path}')
+    def __init__(self,sheet_name,excel_name='test_data'):
+        self.excel_path = os.path.join(PROJ_PARENT_ROOT, "conf", f'{excel_name}.xlsx')
+        logger.info(f'excel_path: {self.excel_path}')
+        
         self.sheet_name = sheet_name
         # 获取工作薄
         self.workbook = load_workbook(self.excel_path)
@@ -44,11 +45,11 @@ class DealExcel:
             if matches:
                 for match in matches:
                     tuple_result = tuple(match.strip('(').strip(')').split(','))
-                    # print(f'tuple_result: {tuple_result}')
+                    # logger.info(f'tuple_result: {tuple_result}')
                     # data in params.xlsx: (a,b,c),(e,f,g)
                     # return data: [('a','b','c'),('e','f','g')],input data to script by group
                     list_data.append(tuple_result)
-                    # print("The contents in parentheses:", match)
+                    # logger.info("The contents in parentheses:", match)
                     return_data = list_data
             elif "," in str(cell_value):
                 # data in params.xlsx: a,b,c
@@ -57,7 +58,7 @@ class DealExcel:
             else:
                 return_data = cell_value
                 #return_data.append(cell_value)
-        #print(f'return_data: {return_data}, {type(return_data)}')
+        #logger.info(f'return_data: {return_data}, {type(return_data)}')
         return return_data
 
     def get_right_cells(self, cell, n):
@@ -66,7 +67,7 @@ class DealExcel:
         row = cell.row
         right_column = column + n
         right_cell = self.sheet.cell(row=row, column=right_column)
-        #print(f'right_cell: {right_cell}')
+        #logger.info(f'right_cell: {right_cell}')
         return right_cell
 
     def get_position(self, cell_data):
@@ -83,7 +84,7 @@ class DealExcel:
                 if value == cell_data:
                     # 获取单元格的位置
                     cell_position = self.sheet.cell(row=row_index, column=column_index).coordinate
-                    #print(f'cell_position: {cell_position}')
+                    #logger.info(f'cell_position: {cell_position}')
                     break
         return cell_position
 
@@ -91,9 +92,8 @@ class DealExcel:
         # 获取case_name所在单元格
         cell_position = self.get_position(case_name)
         if not cell_position:
-            print(f"the {case_name} is not in the sheet")
+            logger.warning(f"the {case_name} is not in the {self.sheet_name}")
         else:
-            print('cell position')
             cell = self.sheet[cell_position]
             #print(f'cell_value: {cell.value}')
             # 获取用例测试数据
@@ -124,14 +124,12 @@ class DealExcel:
             elif params_name == 'result_video':
                 return self.set_data_format(self.get_right_cells(cell, 13).value)
             elif params_name == 'test_result':
-                print('this_params_name: ' + 'test_result')
-                print(str(self.get_right_cells(cell, 14).value))
                 return self.set_data_format(self.get_right_cells(cell, 14).value)
             # 获取传入的变量的值，digital_server，output那些
-            elif params_name in ['digital_server','output']:
+            elif params_name in ['digital_server','output','jinkins_num','test_time']:
                 return self.set_data_format(self.get_right_cells(cell, 1).value)
             else:
-                logger.warning(f"the {params_name} is not in the sheet")
+                logger.warning(f"the {params_name} is not in {self.sheet_name}")
 
         # 保存Excel文件
         self.workbook.save(self.excel_path)
@@ -142,8 +140,8 @@ class DealExcel:
         # 获取case_name所在单元格
         cell_position = self.get_position(case_name)
         if not cell_position:
-            logger.warning("warning: the 'case_name' is not in the sheet")
-            print("warning: the 'case_name' is not in the sheet")
+            logger.warning(f"warning: the {case_name} is not in the {self.sheet_name}")
+            print(f"warning: the {case_name} is not in the {self.sheet_name}")
         else:
             cell = self.sheet[cell_position]
             # 获取 cell_position单元格的右边数据
@@ -178,8 +176,8 @@ class DealExcel:
 if __name__ == '__main__':
 
     digital_server = 'digital_server-v1.6.0.142-202309080839-feature-69cf6c0f-2023-09-08-21-47'
-    output = '6path/to/success'
-    case_scope = '6SMOKE_CASES'
+    output = '/home/aitest/dora'
+    case_scope = 'ALL_CASES'
     excel = DealExcel(sheet_name = 'params')
     print(excel.sheet_name)
     excel.update_excel(case_name='digital_server',data=digital_server)
@@ -205,5 +203,12 @@ if __name__ == '__main__':
     result_model = excel3.get_data(case_name=case_name,params_name='result_model')
     print(f'type(result_model): {type(result_model)}')
     print(f'result_model: {result_model}')
+    jinkins_num = excel.get_data(case_name='jinkins_num',params_name='jinkins_num')
+    print(f'jinkins_num: {jinkins_num}')
+    model_path = '/data/digital_datas/models/ecf651fe-f8b3-401b-bb4c-fdbefe772cca/ecf651fe-f8b3-401b-bb4c-fdbefe772cca.zip'
+    model_path = model_path.replace('/',os.path.sep)
+    print(f'os.path.sep: {type(os.path.sep)},\n{os.path.sep}')
+    print(f'model_path: {type(model_path)},\n{model_path}')
+
 
 
