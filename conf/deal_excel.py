@@ -22,8 +22,9 @@ logger = Logger(log_path='logs',log_file='test_digital_human.log').get_log()
 
 
 class DealExcel:
-    def __init__(self,sheet_name,excel_name='test_data'):
-        self.excel_path = os.path.join(PROJ_PARENT_ROOT, "conf", f'{excel_name}.xlsx')
+    def __init__(self,sheet_name,parent_path=PROJ_PARENT_ROOT,file_path= "conf",excel_name='test_data.xlsx'):
+        self.excel_path = os.path.join(parent_path, file_path, excel_name)
+
         logger.info(f'excel_path: {self.excel_path}')
 
         self.sheet_name = sheet_name
@@ -128,7 +129,7 @@ class DealExcel:
             elif params_name == 'test_result':
                 return_data =  self.set_data_format(self.get_right_cells(cell, 14).value)
             # 获取传入的变量的值，digital_server，output那些
-            elif params_name in ['digital_server','output','jinkins_num','test_time']:
+            elif params_name in ['digital_server','output','jinkins_num','run_mark','test_time']:
                 return_data =  self.set_data_format(self.get_right_cells(cell, 1).value)
             else:
                 logger.warning(f"the {params_name} is not in {self.sheet_name}")

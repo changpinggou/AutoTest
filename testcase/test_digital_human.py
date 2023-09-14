@@ -56,10 +56,9 @@ class Test_DigitalHuman:
         self.model_work = 1
         self.inference_work = 2
         self.video_work = 2
-                
-        # 读取测试数据
-        self.excel = DealExcel(excel_name='test_data',sheet_name='ALL_CASES')
-        excel_params = DealExcel(excel_name='test_data',sheet_name = 'params')
+
+        # 从默认配置conf/test_data.xlsx读取测试数据
+        excel_params = DealExcel(excel_name='test_data.xlsx',sheet_name = 'params')
         self.digital_server = excel_params.get_data(case_name='digital_server',params_name='digital_server')
         print(f'digital_server: {self.digital_server}')
         logger.info(f'{self.digital_server}\n')
@@ -67,9 +66,10 @@ class Test_DigitalHuman:
         logger.info(f'output: {self.output}')
         self.jinkins_num = excel_params.get_data(case_name='jinkins_num',params_name='jinkins_num')
         logger.info(f'jinkins_num: {self.jinkins_num}')
-        self.sys_logs = f"sys_logs_{self.jinkins_num}" # 存放运行接口的系统日志
-        
-        # 测试完毕，将日志和产物移动到AutoTest_full_path
+        # 存放接口的系统日志
+        self.sys_logs = f"sys_logs_{self.jinkins_num}" 
+
+        # 启动测试就创建本次测试记录数据文件夹AutoTest_{jenkins_num}；测试完毕，将日志和产物移动到AutoTest_full_path.
         AutoTest_path = f'AutoTest_{self.jinkins_num}'
         self.AutoTest_full_path = com_func.mkdir_file(self.output,AutoTest_path)
         logger.info(f'AutoTest_full_path: {self.AutoTest_full_path}')
@@ -81,11 +81,22 @@ class Test_DigitalHuman:
         self.AutoTest_log = com_func.mkdir_file(self.AutoTest_full_path,'sys_logs')
         self.json_path = com_func.mkdir_file(PROJ_PARENT_ROOT,'results','result.json')
 
-        # 将测试数据test_data.xlsx复制一份本次测试使用，需要完善逻辑
-        test_data = os.path.join(PROJ_PARENT_ROOT, 'conf','test_data.xlsx')
-        com_func.cp_file(file_name=test_data,target_path=self.AutoTest_full_path)
-        
+        # 是否重跑标记
+        self.run_mark = excel_params.get_data(case_name='run_mark',params_name='run_mark')
 
+        # 测试数据cache_data/test_data.xlsx
+        self.cache_data = com_func.mkdir_file(father_path=PROJ_PARENT_ROOT,file_path='data_cache')
+
+        if self.run_mark == 'new_run':
+            # 将复制一份默认测试数据test_data.xlsx本次测试使用
+            default_data = os.path.join(PROJ_PARENT_ROOT, 'conf','test_data.xlsx')
+            com_func.cp_file(file_name=default_data,target_path = self.cache_data)
+            
+        self.run_data = os.path.join(self.cache_data, 'test_data.xlsx')
+        logger.info(f'run_data: {self.run_data}')
+        # 每次测试从AutoTest_{jenkins_num}读取测试数据
+        self.excel = DealExcel(excel_name=self.run_data, sheet_name='ALL_CASES',parent_path='',file_path='')
+             
         # record test result
         self.result = {
             # test_report: test result summary
@@ -114,6 +125,9 @@ class Test_DigitalHuman:
             f.write(json.dumps(self.result))
         # 将result.json备份到sys_logs_{jenkins_nums}
         com_func.cp_file(file_name=self.json_path,target_path=self.AutoTest_full_path)
+
+        # 将测试结果data_cache/test_data.xlsx 备份到sys_logs_{jenkins_nums}
+        com_func.cp_file(file_name=self.run_data, target_path=self.AutoTest_full_path)
 
     def teardown_class(self):
         self.all_case_use_time = time.time() - self.start_time
@@ -270,7 +284,7 @@ if __name__ == '__main__':
     logger.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~running~~~~~~~~~~~~~~~~~~~~~~~~~~~running~~~~~~~~~~~~~~~~~~~~~~~~~~~")
     case_path = os.path.join(PROJ_PARENT_ROOT,"testcase","test_digital_human.py")
     # pytest.main方式执行用例
-    pytest.main([f'{case_path}::Test_DigitalHuman','-sv']) 
+    pytest.main([f'{case_path}::Test_DigitalHuman::test_create_video','-sv']) 
 
     # 命令行模式执行用例
     # cmd = f"pytest {case_path}::Test_DigitalHuman::test_create_video -rasv"

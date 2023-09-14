@@ -34,9 +34,21 @@ class ComFunc:
         # -r 递归处理，-f强制覆盖同名文件
         if not file_name:
             cmd = f"echo 'zegoai@test' | sudo -S cp -rf {file_path}/* {target_path}"
+            process_execute.execute_command(cmd)
         else:
             cmd = f"echo 'zegoai@test' | sudo -S cp -f {file_name} {target_path}"
-        process_execute.execute_command(cmd)
+            process_execute.execute_command(cmd)
+        
+        # 授予文件全部权限
+        chmod_cmd = f"echo 'zegoai@test' | sudo -S chmod -R 777 {target_path}"
+        print(f'chmod_cmd: {chmod_cmd}')
+        process_execute.execute_command(chmod_cmd)
+            
+            
+        
+
+        
+
 
 if __name__ == '__main__':
     result = {
