@@ -3,6 +3,10 @@ import sys
 import json
 import argparse
 
+# 因为有些case json 键的生成没有固定变量或者没有规律，这里要配合case json过滤
+ignore_key_list = ['pass_action', 'pass_nums', 'video_dict', 'fail_action', 'fail_nums', 
+                   'model_name', 'inference_name', 'model_dict', 'inference_dict', 'video_dict',
+                   'message', 'code']
 
 def get_args(params):
     params = params[1:]
@@ -36,26 +40,33 @@ def make_richer_case_json(output, inner_json_path):
     content = json.load(json_file)
     json_file.close()
     
-    map = {
-        'create_time' : content['test_report']['create_time'],
+    richer_map = {
+        'create_time' : str(content['test_report']['create_time']),
         'case' : []
     }
+    print('map init:' + str(richer_map))
     
     inner_detail_map = content['detail']
     for key in inner_detail_map:
-        case_map = {}
         value = inner_detail_map[key]
-        case_map['case_name'] = value['action']
-        case_map['describe'] = '下个版本同步'
-        case_map['model'] = value['create_model']['original_model']
-        case_map['inference_packages'] = value['create_model']['original_inference']
-        case_map['audio'] = value['create_model']['original_audio']
-        case_map['output'] = value['create_model']['output']
+        for case_key in value:
+            if case_key in ignore_key_list:
+                continue
+            case_value = value[case_key]
         
-        map['case'].append(case_map)
-        
-    with open(os.path.join(output, 'results.json'), 'w+') as fs:
-        json.dump(map, fs, indent = 4) 
+            if case_value['output'].endswith('.mp4'):
+                case_map = {}
+                case_map['case_name'] = case_value['action']
+                case_map['describe'] = "下个版本同步"
+                # case_map['model'] = case_value['original_model']
+                # case_map['inference_packages'] = case_value['original_inference']
+                # case_map['audio'] = case_value['original_audio']
+                case_map['output'] = case_value['output']
+
+                richer_map['case'].append(case_map)
+    print('map final: ' + str(richer_map))
+    with open(os.path.join(output, 'results.json'), 'w+', encoding='utf-8') as fs:
+        json.dump(richer_map, fs, indent = 4, ensure_ascii = False) 
     
 
 def main(argv):

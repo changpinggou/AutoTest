@@ -184,7 +184,6 @@ class Test_DigitalHuman:
             pass
         else:
             result_great_change = {
-                "action": "test_great_change_create_model_inference_video",
                 "pass_action": [],
                 "fail_action": []
                 }
