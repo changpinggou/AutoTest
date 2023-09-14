@@ -25,7 +25,7 @@ class DealExcel:
     def __init__(self,sheet_name,excel_name='test_data'):
         self.excel_path = os.path.join(PROJ_PARENT_ROOT, "conf", f'{excel_name}.xlsx')
         logger.info(f'excel_path: {self.excel_path}')
-        
+
         self.sheet_name = sheet_name
         # 获取工作薄
         self.workbook = load_workbook(self.excel_path)
@@ -40,7 +40,7 @@ class DealExcel:
             return_data = None
         else:
             pattern = r"\(.*?\)"  # 使用正则表达式非贪婪模式匹配括号及其内部的任意内容
-            matches = re.findall(pattern, cell_value)
+            matches = re.findall(pattern, str(cell_value))
             list_data = []
             if matches:
                 for match in matches:
@@ -91,50 +91,57 @@ class DealExcel:
     def get_data(self, case_name, params_name='',cell_num=1):
         # 获取case_name所在单元格
         cell_position = self.get_position(case_name)
+        return_data = ''
         if not cell_position:
+            return_data = ''
             logger.warning(f"the {case_name} is not in the {self.sheet_name}")
         else:
             cell = self.sheet[cell_position]
             #print(f'cell_value: {cell.value}')
             # 获取用例测试数据
             if params_name == 'quality':
-                return self.set_data_format(self.get_right_cells(cell, 1).value)
+                return_data =  self.set_data_format(self.get_right_cells(cell, 1).value)
             elif params_name == 'video_path_to_model':
-                return self.set_data_format(self.get_right_cells(cell, 2).value)
+                return_data =  self.set_data_format(self.get_right_cells(cell, 2).value)
             elif params_name == 'video_to_model':
-                return self.set_data_format(self.get_right_cells(cell, 3).value)
+                return_data =  self.set_data_format(self.get_right_cells(cell, 3).value)
             elif params_name == 'result_model':
-                return self.set_data_format(self.get_right_cells(cell, 4).value)
+                return_data =  self.set_data_format(self.get_right_cells(cell, 4).value)
             elif params_name == 'video_path_to_inference':
-                return self.set_data_format(self.get_right_cells(cell, 5).value)
+                return_data =  self.set_data_format(self.get_right_cells(cell, 5).value)
             elif params_name == 'video_to_inference':
-                return self.set_data_format(self.get_right_cells(cell, 6).value)
+                return_data =  self.set_data_format(self.get_right_cells(cell, 6).value)
             elif params_name == 'label_config_base64':
-                return self.set_data_format(self.get_right_cells(cell, 7).value)
+                return_data =  self.set_data_format(self.get_right_cells(cell, 7).value)
             elif params_name == 'result_inference':
-                return self.set_data_format(self.get_right_cells(cell, 8).value)
+                return_data =  self.set_data_format(self.get_right_cells(cell, 8).value)
             elif params_name == 'input_model':
-                return self.set_data_format(self.get_right_cells(cell, 9).value)
+                return_data =  self.set_data_format(self.get_right_cells(cell, 9).value)
             elif params_name == 'input_inference':
-                return self.set_data_format(self.get_right_cells(cell, 10).value)
+                return_data =  self.set_data_format(self.get_right_cells(cell, 10).value)
             elif params_name == 'audio_path':
-                return self.set_data_format(self.get_right_cells(cell, 11).value)
+                return_data =  self.set_data_format(self.get_right_cells(cell, 11).value)
             elif params_name == 'audio_name':
-                return self.set_data_format(self.get_right_cells(cell, 12).value)
+                return_data =  self.set_data_format(self.get_right_cells(cell, 12).value)
             elif params_name == 'result_video':
-                return self.set_data_format(self.get_right_cells(cell, 13).value)
+                return_data =  self.set_data_format(self.get_right_cells(cell, 13).value)
             elif params_name == 'test_result':
-                return self.set_data_format(self.get_right_cells(cell, 14).value)
+                return_data =  self.set_data_format(self.get_right_cells(cell, 14).value)
             # 获取传入的变量的值，digital_server，output那些
             elif params_name in ['digital_server','output','jinkins_num','test_time']:
-                return self.set_data_format(self.get_right_cells(cell, 1).value)
+                return_data =  self.set_data_format(self.get_right_cells(cell, 1).value)
             else:
                 logger.warning(f"the {params_name} is not in {self.sheet_name}")
-
+                return_data = ''
+            
+        if not return_data:
+            return_data = ''
+            logger.warning(f"data is null ")
         # 保存Excel文件
         self.workbook.save(self.excel_path)
         # 关闭Excel文件
         self.workbook.close()
+        return return_data
 
     def update_excel(self, case_name, data,params_name=''):
         # 获取case_name所在单元格

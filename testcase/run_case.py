@@ -60,8 +60,8 @@ def run_case(digital_server, output, case_scope,jinkins_num=''):
 if __name__ == '__main__':
     digital_server = 'digital_server-v1.6.0.79-202309111040-520bd81c-2023-09-11-20-02'
     output = f"/home/aitest/dora".replace('/', os.path.sep)
-    case_scope = 'video_batch'
-    jinkins_num = 999
+    case_scope = 'ALL_CASES'
+    jinkins_num = 303
     run_case(digital_server,output,case_scope,jinkins_num)
     excel_params = DealExcel(sheet_name ='params')
     server = excel_params.get_data(case_name='digital_server',params_name='digital_server')

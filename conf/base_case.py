@@ -206,7 +206,7 @@ class BaseCase:
                     com_func.cp_file(file_name=interpolation_origin_path,target_path=self.AutoTest_inference)
                     # inference写移动后到位置
                     inference_json["interpolation_path"] = os.path.join(self.AutoTest_inference,interpolation_zip)
-                    logger.info(f'result interpolation path after cp: {inference_json["interpolation_name"]}')
+                    logger.info(f'result interpolation path after cp: {inference_json["interpolation_path"]}')
             else:
                 logger.error('create_inference_package fail')
                 msg = result_dict['message']
@@ -239,7 +239,7 @@ class BaseCase:
         start_time = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f")
         audio_full_path = f"test/{audio_path}/{audio_name}".replace('/',os.path.sep)
         model_mark = ''
-        if os.path.sep in model_name:
+        if str(os.path.sep) in model_name:
             model_mark = model_name.split(os.path.sep)[0]
         else:
             model_mark = model_name.split('.zip')[0]

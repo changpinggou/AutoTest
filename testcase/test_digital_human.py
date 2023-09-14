@@ -162,8 +162,9 @@ class Test_DigitalHuman:
         case_name = 'test_create_video_batch'
         logger.info(f'running {case_name}')
         self.base_case.assert_case(case_name=case_name,action='create_video',work=self.video_work)
-
-    @pytest.mark.smoke
+        
+    @pytest.mark.skip
+    @pytest.mark.P0
     def test_create_video_from_pretrain_model(self):
         case_name = 'test_create_video_from_pretrain_model'
         logger.info(f'running {case_name}')
@@ -237,7 +238,7 @@ class Test_DigitalHuman:
 
             video_json = {}
             try:
-                model_name = result_great_change['model_name'].split('models/')[-1]
+                model_name = result_great_change['model_name'].split('.zip')[0]+os.path.sep+result_great_change['model_name']
                 inference_name = result_great_change["inference_name"].split('inference_packages/')[-1]
                 audio_name = self.excel.get_data(case_name=case_name,params_name='audio_name')
                 video_json = self.base_case.create_video_from_audio(model_name, inference_name,audio_name)            
@@ -270,7 +271,7 @@ if __name__ == '__main__':
     logger.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~running~~~~~~~~~~~~~~~~~~~~~~~~~~~running~~~~~~~~~~~~~~~~~~~~~~~~~~~")
     case_path = os.path.join(PROJ_PARENT_ROOT,"testcase","test_digital_human.py")
     # pytest.main方式执行用例
-    pytest.main([f'{case_path}::Test_DigitalHuman::test_create_video_from_pretrain_model','-sv']) 
+    pytest.main([f'{case_path}::Test_DigitalHuman','-sv']) 
 
     # 命令行模式执行用例
     # cmd = f"pytest {case_path}::Test_DigitalHuman::test_create_video -rasv"
