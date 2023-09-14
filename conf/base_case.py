@@ -104,8 +104,10 @@ class BaseCase:
                 # model 只取xx.zip部分
                 model_origin = result_dict['data']['model_path']
                 model_zip = model_origin.split(str(os.path.sep))[-1]
+                model_json["model_name"] = model_zip
                 model_path = f"/data/digital_datas/{model_origin}".replace('/',os.path.sep)
                 logger.info(f'model_path: {type(model_path)}\n,{model_path}')
+
                 # 备份model（此处做cp，保留源model）
                 com_func.cp_file(file_name=model_path,target_path=self.AutoTest_model)
                 # model写移动后到位置
@@ -181,6 +183,7 @@ class BaseCase:
                 # 完整格式："output_path": "inference_packages/e2e6a813-e0ba-4259-87c6-4fc1deedf906.zip"
                 inference_origin = result_dict['data']['output_path']
                 inference_zip = inference_origin.split(str(os.path.sep))[-1]
+                inference_json["inference_name"] = inference_zip
                 inference_origin_path = f"/data/digital_datas/{inference_origin}".replace('/',os.path.sep)
                 logger.info(f'inference_path: {type(inference_origin_path)}\n,{inference_origin_path}')
                 # 备份inference（此处做cp，保留源inference）
@@ -202,7 +205,7 @@ class BaseCase:
                     # 备份interpolation（此处做cp，保留源interpolation）
                     com_func.cp_file(file_name=interpolation_origin_path,target_path=self.AutoTest_inference)
                     # inference写移动后到位置
-                    inference_json["interpolation_name"] = os.path.join(self.AutoTest_inference,interpolation_zip)
+                    inference_json["interpolation_path"] = os.path.join(self.AutoTest_inference,interpolation_zip)
                     logger.info(f'result interpolation path after cp: {inference_json["interpolation_name"]}')
             else:
                 logger.error('create_inference_package fail')

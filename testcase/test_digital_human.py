@@ -53,9 +53,9 @@ class Test_DigitalHuman:
         self.start_time = time.time()
 
         # 运行create程序并行数
-        self.model_work = 2
-        self.inference_work = 5
-        self.video_work = 5
+        self.model_work = 1
+        self.inference_work = 2
+        self.video_work = 2
                 
         # 读取测试数据
         self.excel = DealExcel(excel_name='test_data',sheet_name='ALL_CASES')
@@ -212,13 +212,13 @@ class Test_DigitalHuman:
                         assert thread_json["code"] == 0
                         result_great_change["pass_action"].append(action)
                         if action == "create_inference_package":
-                            result_great_change["inference_name"] = thread_json["inference_origin"]
+                            result_great_change["inference_name"] = thread_json["inference_name"]
                             self.excel.update_excel(case_name=case_name,params_name='result_inference',data=str(thread_json["output"]))
                             result_inference_dict[thread_json["create_inference_log"]] = thread_json["output"]
                             self.result["test_report"]["result_inference_list"].append(result_inference_dict)
                             result_great_change["create_inference_package"] = thread_json
                         elif action == "create_model_from_video":
-                            result_great_change["model_name"] = thread_json["model_origin"]
+                            result_great_change["model_name"] = thread_json["model_name"]
                             self.excel.update_excel(case_name=case_name,params_name='result_model',data=str(thread_json["output"]))
                             result_model_dict[thread_json["create_model_log"]] = thread_json["output"]
                             self.result["test_report"]["result_model_list"].append(result_model_dict)
@@ -270,7 +270,7 @@ if __name__ == '__main__':
     logger.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~running~~~~~~~~~~~~~~~~~~~~~~~~~~~running~~~~~~~~~~~~~~~~~~~~~~~~~~~")
     case_path = os.path.join(PROJ_PARENT_ROOT,"testcase","test_digital_human.py")
     # pytest.main方式执行用例
-    pytest.main([f'{case_path}::Test_DigitalHuman::test_create_video','-sv']) 
+    pytest.main([f'{case_path}::Test_DigitalHuman::test_create_video_from_pretrain_model','-sv']) 
 
     # 命令行模式执行用例
     # cmd = f"pytest {case_path}::Test_DigitalHuman::test_create_video -rasv"
